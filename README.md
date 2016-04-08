@@ -62,7 +62,7 @@ You do this:
 ```
 
 And you get this!
-![image](http://example.app:8000/img/1.jpg)
+![image](http://s16.postimg.org/gitalgeth/image.jpg)
 
 Since I'm mainly using [Semantic UI](http://semantic-ui.com) as my default CSS Framework, all the css
 styles in `vuetable` are based on Semantic UI. If you're using Twitter's [Bootstrap](http://getbootstrap.com)
@@ -858,7 +858,7 @@ _main.css_
         }
     </style>
 ```
-![using Bootstrap](http://postimg.org/image/dx6cypcvz/)
+![image](http://s27.postimg.org/nuhdrrkhv/bootstrap.jpg)
 
 <a id="license"></a>
 ## License
