@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>vuetable - Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Move down content because we have a fixed navbar that is 50px tall */
+        body {
+          padding-top: 50px;
+          padding-bottom: 20px;
+        }
+        .vuetable th.sortable:hover {
+            color: #2185d0;
+            cursor: pointer;
+        }
+        .vuetable-actions {
+            width: 11%;
+            padding: 12px 0px;
+            text-align: center;
+        }
+        .vuetable-actions > button {
+          padding: 3px 6px;
+          margin-right: 4px;
+        }
+        .vuetable-pagination {
+        }
+        .vuetable-pagination-info {
+            float: left;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+        ul.pagination {
+          margin: 0px;
+        }
+        .vuetable-pagination-component {
+          float: right;
+        }
+    </style>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Project name</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <form class="navbar-form navbar-right">
+                    <div class="form-group">
+                        <input type="text" placeholder="Email" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" placeholder="Password" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-success">Sign in</button>
+                </form>
+            </div><!--/.navbar-collapse -->
+        </div>
+    </nav>
+
+    <div id="app" class="container">
+      <!-- Example row of columns -->
+        <h2 class="sub-header">List of Users</h2>
+        <div class="table-responsive">
+            <vuetable
+                api-url="http://example.app:8000/api/users"
+                :fields="fields"
+                :sort-order="sortOrder"
+                table-class="table table-bordered table-striped table-hover"
+                ascending-icon="glyphicon glyphicon-chevron-up"
+                descending-icon="glyphicon glyphicon-chevron-down"
+                pagination-class=""
+                pagination-info-class=""
+                pagination-component-class=""
+                pagination-component="vuetable-pagination-bootstrap"
+                :item-actions="itemActions"
+            ></vuetable>
+        </div>
+
+        <template id="vuetable-pagination-bootstrap-template">
+            <nav>
+                <ul class="pagination">
+                    <li class="{{isOnFirstPage ? disabledClass : ''}}">
+                        <a @click="loadPage('prev')"><i class="glyphicon glyphicon-chevron-left"></i></a>
+                    </li>
+                    <template v-for="n in totalPage">
+                        <li class="{{isCurrentPage(n+1) ? ' active' : ''}}">
+                            <a @click="loadPage(n+1)"> {{ n+1 }}</a>
+                        </li>
+                    </template>
+                    <li class="{{isOnLastPage ? disabledClass : ''}}">
+                        <a @click="loadPage('next')"><i class="glyphicon glyphicon-chevron-right"></i></a>
+                    </li>
+                </ul>
+            </nav>
+        </template>
+    </div>
+
+    <hr>
+
+    <footer>
+        <p>&copy; 2015 Company, Inc.</p>
+    </footer>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment-with-locales.min.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/vue-resource.js"></script>
+    <script src="../src/vue-table.js"></script>
+    <script src="js/sweetalert.min.js"></script>
+    <script>
+    var E_SERVER_ERROR = 'Error communicating with the server'
+
+    // fields definition
+    var tableColumns = [
+        'name',
+        'email',
+        {
+            name: 'nickname',
+            callback: 'allCap'
+        },
+        {
+            name: 'birthdate',
+            callback: 'formatDate|D/MM/Y'
+        },
+        {
+            name: 'gender',
+            sortField: 'gender',
+            titleClass: 'center aligned',
+            dataClass: 'center aligned',
+            callback: 'gender'
+        },
+        {
+            name: '__actions',
+            dataClass: 'center aligned',
+        }
+    ]
+
+    Vue.config.debug = true
+
+    // create pagination component using bootstrap styling
+    Vue.component('vuetable-pagination-bootstrap', {
+        template: '#vuetable-pagination-bootstrap-template',
+        mixins: [paginationMixin],
+        methods: {
+            loadPage: function(page) {
+                this.$dispatch('vuetable-pagination:change-page', page)
+            },
+        },
+    })
+
+    new Vue({
+        el: '#app',
+        data: {
+            fields: tableColumns,
+            paginationInfoTemplate: 'แสดง {from} ถึง {to} จากทั้งหมด {total} รายการ',
+            itemActions: [
+                { name: 'view-item', label: '', icon: 'glyphicon glyphicon-zoom-in', class: 'btn btn-info' },
+                { name: 'edit-item', label: '', icon: 'glyphicon glyphicon-pencil', class: 'btn btn-warning'},
+                { name: 'delete-item', label: '', icon: 'glyphicon glyphicon-remove', class: 'btn btn-danger' }
+            ]
+        },
+        methods: {
+            /**
+             * Callback functions
+             */
+            allCap: function(value) {
+                return value.toUpperCase()
+            },
+            gender: function(value) {
+              return value == 'M'
+                ? '<span class="label label-info"><i class="glyphicon glyphicon-star"></i> Male</span>'
+                : '<span class="label label-success"><i class="glyphicon glyphicon-heart"></i> Female</span>'
+            },
+            formatDate: function(value, fmt) {
+                if (value == null) return ''
+                fmt = (typeof fmt == 'undefined') ? 'D MMM YYYY' : fmt
+                return moment(value, 'YYYY-MM-DD').format(fmt)
+            },
+            /**
+             * Other functions
+             */
+            viewProfile: function(hash) {
+                window.location.href = '/staffs/profile/'+hash
+            }
+        },
+        events: {
+            'vuetable:action': function(action, data) {
+                console.log('vuetable:action', action, data)
+                if (action == 'viewItem') {
+                    this.viewProfile(data.hash)
+                }
+            },
+            'vuetable:load-error': function(response) {
+                if (response.status == 400) {
+                    sweetAlert('Something\'s Wrong!', response.data.message, 'error')
+                } else {
+                    sweetAlert('Oops', E_SERVER_ERROR, 'error')
+                }
+            }
+        }
+    })
+    </script>
+  </body>
+</html>

@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <!-- Site Properties -->
+  <title>vuetable - Semantic</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
+
+  <style type="text/css">
+
+    .ui.vertical.stripe h3 {
+      font-size: 2em;
+    }
+
+    .secondary.pointing.menu .toc.item {
+      display: none;
+    }
+
+    .vuetable button.ui.button {
+        padding: .5em .5em;
+        font-weight: 400;
+    }
+    .vuetable button.ui.button i.icon {
+        margin: 0;
+    }
+    .vuetable th.sortable:hover {
+      color: #2185d0;
+      cursor: pointer;
+    }
+    .vuetable-actions {
+      width: 15%;
+      padding: 12px 0px;
+      text-align: center;
+    }
+    .vuetable-pagination {
+      background: #f9fafb !important;
+    }
+    .vuetable-pagination-info {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+    .vuetable-pagination-component {
+
+    }
+
+  </style>
+
+</head>
+<body>
+
+<!-- Sidebar Menu -->
+<div class="ui vertical inverted sidebar menu">
+  <a class="active item">Home</a>
+  <a class="item">Work</a>
+  <a class="item">Company</a>
+  <a class="item">Careers</a>
+  <a class="item">Login</a>
+  <a class="item">Signup</a>
+</div>
+
+
+<!-- Page Contents -->
+<div class="pusher">
+  <div class="ui inverted vertical masthead center aligned segment">
+
+    <div class="ui container">
+      <div class="ui large secondary inverted pointing menu">
+        <a class="toc item">
+          <i class="sidebar icon"></i>
+        </a>
+        <a class="active item">Home</a>
+        <a class="item">Work</a>
+        <a class="item">Company</a>
+        <a class="item">Careers</a>
+        <div class="right item">
+          <a class="ui inverted button">Log in</a>
+          <a class="ui inverted button">Sign Up</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+    <div id="app" class="ui vertical stripe segment">
+        <div class="ui container">
+            <div id="content" class="ui basic segment">
+                <h3 class="ui header">List of Users</h3>
+                <vuetable
+                    api-url="http://example.app:8000/api/users"
+                    table-wrapper="#content"
+                    data-path="data"
+                    pagination-path=""
+                    :fields="columns"
+                    :item-actions="itemActions"
+                ></vuetable>
+            </div>
+        </div>
+    </div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment-with-locales.min.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/vue-resource.js"></script>
+<script src="../src/vue-table.js"></script>
+<script>
+    Vue.config.debug = true
+    new Vue({
+        el: '#app',
+        data: {
+            columns: [
+                'name',
+                'nickname',
+                'email',
+                'birthdate',
+                'gender',
+                '__actions'
+            ],
+            itemActions: [
+                { name: 'view-item', label: '', icon: 'zoom icon', class: 'ui teal button' },
+                { name: 'edit-item', label: '', icon: 'edit icon', class: 'ui orange button'},
+                { name: 'delete-item', label: '', icon: 'delete icon', class: 'ui red button' }
+            ]
+        },
+        methods: {
+            viewProfile: function(id) {
+                console.log('view profile with id:', id)
+            }
+        },
+        events: {
+            'vuetable:action': function(action, data) {
+                console.log('vuetable:action', action, data)
+                if (action == 'view-item') {
+                    this.viewProfile(data.id)
+                }
+            },
+            'vuetable:load-error': function(response) {
+                console.log('Load Error: ', response)
+            }
+        }
+    })
+</script>
+</body>
+</html>
