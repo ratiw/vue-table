@@ -111,7 +111,7 @@ the true power of `vuetable`, you must provide some more information.
 Please see [Field Definition] section for more detail.
 
 What it will look like?
-![image](http://example.app:8000/img/1.png)
+![image](http://postimg.org/image/indnmjgg1/)
 
 # Table of Content
 - [Properties](#properties)
@@ -858,7 +858,7 @@ _main.css_
         }
     </style>
 ```
-![aa](http://example.app:8000/img/bootstrap.jpg)
+![using Bootstrap](http://postimg.org/image/dx6cypcvz/)
 
 <a id="license"></a>
 ## License
