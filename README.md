@@ -5,6 +5,10 @@ vuetable
 from the server and display them nicely in html table with swappable/extensible
 pagination sub-component.
 
+Please note that all the examples show in here are styling using Semantic UI CSS Framework,
+but `vuetable` should be able to work with any CSS framwork including Twitter's Bootstrap.
+Please read through and see more info below.
+
 You do this:
 ```html
     <div id="app" class="ui vertical stripe segment">
