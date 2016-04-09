@@ -3,11 +3,14 @@ vuetable
 
 `vuetable` is a Vue.js component that will automatically request (JSON) data
 from the server and display them nicely in html table with swappable/extensible
-pagination sub-component.
+pagination sub-component. You can also add buttons to each row and hook an event
+to it
 
-Please note that all the examples show in here are styling using Semantic UI CSS Framework,
-but `vuetable` should be able to work with any CSS framwork including Twitter's Bootstrap.
-Please read through and see more info below.
+![image](http://s20.postimg.org/lf470bkd7/vuetable_short.gif)
+
+> Please note that all the examples show in here are styling using Semantic UI CSS Framework,
+> but `vuetable` should be able to work with any CSS framwork including Twitter's Bootstrap.
+> Please read through and see more info below.
 
 You do this:
 ```html

@@ -88,21 +88,19 @@
   </div>
 
 
-    <div id="app" class="ui vertical stripe segment">
-        <div class="ui container">
-            <div id="content" class="ui basic segment">
-                <h3 class="ui header">List of Users</h3>
-                <vuetable
-                    api-url="http://example.app:8000/api/users"
-                    table-wrapper="#content"
-                    data-path="data"
-                    pagination-path=""
-                    :fields="columns"
-                    :item-actions="itemActions"
-                ></vuetable>
-            </div>
-        </div>
-    </div>
+  <div id="app" class="ui vertical stripe segment">
+    <div class="ui container">
+      <div id="content" class="ui basic segment">
+      <h3 class="ui header">List of Users</h3>
+      <vuetable
+          api-url="http://example.app:8000/api/users"
+          table-wrapper="#content"
+          :fields="fields"
+          :sort-order="sortOrder"
+          :item-actions="itemActions"
+      />
+      </div>
+  </div>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
@@ -111,39 +109,98 @@
 <script src="js/vue.js"></script>
 <script src="js/vue-resource.js"></script>
 <script src="../src/vue-table.js"></script>
+<script src="js/sweetalert.min.js"></script>
 <script>
+  var tableColumns = [
+        {
+          name: 'name',
+          sortField: 'name'
+        },
+        {
+            name: 'email',
+            sortField: 'email'
+        },
+        {
+            name: 'nickname',
+            sortField: 'nickname',
+            callback: 'allCap'
+        },
+        {
+            name: 'birthdate',
+            sortField: 'birthdate',
+            callback: 'formatDate|D/MM/Y'
+        },
+        {
+            name: 'gender',
+            sortField: 'gender',
+            titleClass: 'center aligned',
+            dataClass: 'center aligned',
+            callback: 'gender'
+        },
+        {
+            name: '__actions',
+            // title: '',
+            dataClass: 'center aligned',
+        }
+    ]
+
     Vue.config.debug = true
+
+    var E_SERVER_ERROR = 'Error communicating with the server'
+
     new Vue({
         el: '#app',
         data: {
-            columns: [
-                'name',
-                'nickname',
-                'email',
-                'birthdate',
-                'gender',
-                '__actions'
-            ],
+            fields: tableColumns,
+            sortOrder: {
+                field: 'name',
+                direction: 'asc',
+            },
+            paginationInfoTemplate: 'แสดง {from} ถึง {to} จากทั้งหมด {total} รายการ',
             itemActions: [
                 { name: 'view-item', label: '', icon: 'zoom icon', class: 'ui teal button' },
                 { name: 'edit-item', label: '', icon: 'edit icon', class: 'ui orange button'},
                 { name: 'delete-item', label: '', icon: 'delete icon', class: 'ui red button' }
             ]
         },
+        computed: {
+        },
         methods: {
-            viewProfile: function(id) {
-                console.log('view profile with id:', id)
-            }
+            /**
+            * Callback functions
+            */
+            allCap: function(value) {
+                return value.toUpperCase()
+            },
+            gender: function(value) {
+                return value == 'M'
+                    ? '<span class="ui teal label"><i class="male icon"></i>Male</span>'
+                    : '<span class="ui pink label"><i class="female icon"></i>Female</span>'
+            },
+            formatDate: function(value, fmt) {
+                if (value == null) return ''
+                fmt = (typeof fmt == 'undefined') ? 'D MMM YYYY' : fmt
+                return moment(value, 'YYYY-MM-DD').format(fmt)
+            },
         },
         events: {
             'vuetable:action': function(action, data) {
                 console.log('vuetable:action', action, data)
+
                 if (action == 'view-item') {
-                    this.viewProfile(data.id)
+                    sweetAlert(action, data.name)
+                } else if (action == 'edit-item') {
+                    sweetAlert(action, data.name)
+                } else if (action == 'delete-item') {
+                    sweetAlert(action, data.name)
                 }
             },
             'vuetable:load-error': function(response) {
-                console.log('Load Error: ', response)
+                if (response.status == 400) {
+                    sweetAlert('Something\'s Wrong!', response.data.message, 'error')
+                } else {
+                    sweetAlert('Oops', E_SERVER_ERROR, 'error')
+                }
             }
         }
     })
