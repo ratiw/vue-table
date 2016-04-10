@@ -6,7 +6,7 @@ from the server and display them nicely in html table with swappable/extensible
 pagination sub-component. You can also add buttons to each row and hook an event
 to it
 
-![image](http://s17.postimg.org/vq0vid14t/vuetable_short.gif)
+![image](https://i.imgsafe.org/d46e5e1.gif)
 
 > Please note that all the examples show in here are styling using Semantic UI CSS Framework,
 > but `vuetable` should be able to work with any CSS framwork including Twitter's Bootstrap.
