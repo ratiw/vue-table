@@ -247,6 +247,12 @@ Vue.component('vuetable', {
                 }
             }
         },
+        'perPage': {
+            type: Number,
+            default: function() {
+                return 10
+            }
+        },
         'ascendingIcon': {
             type: String,
             default: function() {
@@ -357,7 +363,8 @@ Vue.component('vuetable', {
 
             var params = [
                 this.queryParams.sort+'='+ this.getSortParam(),
-                this.queryParams.page+'='+this.currentPage
+                this.queryParams.page+'='+this.currentPage,
+                this.queryParams.perPage+'='+this.perPage
             ]
             var url = this.apiUrl + '?' + params.join('&')
             if (this.appendParams.length > 0) {

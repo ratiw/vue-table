@@ -98,6 +98,7 @@
           :fields="fields"
           :sort-order="sortOrder"
           :item-actions="itemActions"
+          :per-page="5"
       />
       </div>
   </div>
@@ -162,8 +163,6 @@
                 { name: 'edit-item', label: '', icon: 'edit icon', class: 'ui orange button'},
                 { name: 'delete-item', label: '', icon: 'delete icon', class: 'ui red button' }
             ]
-        },
-        computed: {
         },
         methods: {
             /**

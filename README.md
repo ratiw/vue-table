@@ -144,6 +144,7 @@ Property | Type | Default | Description
 `api-url` | String | (_required_) | The URL of the api that `vuetable` will interact with.
 `fields` | Array | (_required_) | The array of fields that would be mapped to the structure of data returned from the server.
 `sort-order` | Object | `{ field: '', direction: 'asc' }` | The default sort order that `vuetable` should use when the data get rendered.
+`per-page` | Number | `10` | The number of data to be requested per page.
 `data-path` | String | `data` | The path into the JSON data structure that `vuetable` will use to refer to the actual data.
 `pagination-path` | String | `links.pagination` | The path into the JSON data structure that `vuetable` will use to refer to the pagination information of the return data.
 `ascendingIcon` | String | `blue chevron up icon` | The css class(es) that will be rendered as ascending icon on the table column header
