@@ -69,7 +69,7 @@ You do this:
 ```
 
 And you get this!
-![image](http://s16.postimg.org/gitalgeth/image.jpg)
+![image](https://i.imgsafe.org/af08442.jpg)
 
 Since I'm mainly using [Semantic UI](http://semantic-ui.com) as my default CSS Framework, all the css
 styles in `vuetable` are based on Semantic UI. If you're using Twitter's [Bootstrap](http://getbootstrap.com)
@@ -118,7 +118,7 @@ the true power of `vuetable`, you must provide some more information.
 Please see [Field Definition] section for more detail.
 
 What it will look like?
-![image](http://postimg.org/image/indnmjgg1/)
+![image](https://i.imgsafe.org/2a0191a.jpg)
 
 # Table of Content
 - [Properties](#properties)
@@ -867,7 +867,7 @@ _main.css_
         }
     </style>
 ```
-![image](http://s27.postimg.org/nuhdrrkhv/bootstrap.jpg)
+![image](https://i.imgsafe.org/5ac50ae.jpg)
 
 <a id="license"></a>
 ## License
