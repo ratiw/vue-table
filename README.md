@@ -10,7 +10,7 @@ to it
 
 > Please note that all the examples show in here are styling using Semantic UI CSS Framework,
 > but `vuetable` should be able to work with any CSS framwork including Twitter's Bootstrap.
-> Please read through and see more info below.
+> Please read through and see more info [below](#bootstrap).
 
 You do this:
 ```html
@@ -117,8 +117,6 @@ You can provide only the name of the fields to be used. But if you would like to
 the true power of `vuetable`, you must provide some more information.
 Please see [Field Definition] section for more detail.
 
-What it will look like?
-![image](https://i.imgsafe.org/2a0191a.jpg)
 
 # Table of Content
 - [Properties](#properties)
