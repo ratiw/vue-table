@@ -643,12 +643,14 @@ of data, you can do so by putting them in the `appendParams` property.
 	        $query = App\User::orderBy('id', 'asc');
 	    }
 
+	    $perPage = request()->has('per_page') ? (int) request()->per_page : null;
+
 		// The headers 'Access-Control-Allow-Origin' and 'Access-Control-Allow-Methods'
 		// are to allow you to call this from any domain (see CORS for more info).
 		// This is for local testing only. You should not do this in production server,
 		// unless you know what it means.
 	    return response()->json(
-	    		$query->paginate()
+	    		$query->paginate($perPage)
     		)
 	    	->header('Access-Control-Allow-Origin', '*')
 	    	->header('Access-Control-Allow-Methods', 'GET');
