@@ -181,6 +181,7 @@ Fields can be defined as simple string array, array of object, or the mix.
 			},
 			{
 				name: 'email',
+				title: 'Email Address'
 			},
 			{
 				name: 'birthdate',
@@ -244,6 +245,10 @@ Fields can be defined as simple string array, array of object, or the mix.
 	clickable icon after the field title. `vuetable` will also make a new request to the server
 	with the `sort=<sortField>` query string appended.
 
+- `title`
+
+	If you would like to specify the title yourself, you can put it in here. Otherwise, `vuetable`
+	will use the `name` option instead.
 
 - `titleClass`
 
