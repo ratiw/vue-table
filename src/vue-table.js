@@ -183,7 +183,7 @@ Vue.component('vuetable', {
                             + '<td v-if="hasCallback(field)" class="{{field.dataClass}}">'
                                 + '{{{ callCallback(field, item) }}}'
                             + '</td>'
-                            + '<td v-else class="{{dataClass}}">'
+                            + '<td v-else class="{{field.dataClass}}">'
                                 + '{{ getObjectValue(item, field.name) }}'
                             + '</td>'
                         + '</template>'
@@ -529,7 +529,7 @@ Vue.component('vuetable', {
             } else {
                 this.gotoPage(page)
             }
-        }
+        },
     },
     created: function() {
         this.normalizeFields()
