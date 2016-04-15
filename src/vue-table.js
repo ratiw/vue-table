@@ -1,5 +1,5 @@
 /*
- * vue-table.js v1.0
+ * vue-table.js v1.0.1
  * (c) 2016 Rati Wannapanop
  * Released under the MIT License.
  */
