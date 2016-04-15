@@ -363,9 +363,7 @@ parameters to decide what the return value should be based on those additional p
 
 <a id="events"></a>
 ## Events
-`vuetable` uses events to communicate with its parent (Vue.js instance) and its pagination
-child component. This allows the parent Vue.js instance and pagination component to tap into
-those events to modify the behavior of `vuetable` with ease.
+`vuetable` uses events to communicate with its parent (Vue.js instance) and its pagination child component. This allows the parent Vue.js instance and pagination component to tap into those events to modify the behavior of `vuetable` with ease. It also exposes some events that allow the main Vue.js instance to control it via those events.
 
 - **`vuetable:action`**
 
@@ -410,6 +408,21 @@ those events to modify the behavior of `vuetable` with ease.
 	This is useful for ending/hiding the loading image.
 
 	*arguments:* This event does not pass any argument.
+
+- **`vuetable:reload`**
+
+	Main Vue.js instance can `$broadcast` this event, to force `vuetable` to reload the data from the server
+	using the current parameters. The page number will stay the same.
+
+- **`vuetable:refresh`**
+
+	Main Vue.js instance can `$broadcast` this event, to force `vuetable` to reload the data from the server
+	and the page number will be reset to 1. It's the same as using `goto-page` page event to load page 1.
+
+- **`vuetable:goto-page`**
+
+	You can programmatically tell `vuetable` to jump to the previous (`prev`), next (`next`), or a specific
+	page number using this event.
 
 - **`vuetable-pagination:change-page`**
 

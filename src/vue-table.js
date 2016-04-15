@@ -530,6 +530,15 @@ Vue.component('vuetable', {
                 this.gotoPage(page)
             }
         },
+        'vuetable:reload': function() {
+            this.loadData()
+        },
+        'vuetable:refresh': function() {
+            this.$emit('vuetable-pagination:change-page', 1)
+        },
+        'vuetable:goto-page': function(page) {
+            this.$emit('vuetable-pagination:change-page', page)
+        },
     },
     created: function() {
         this.normalizeFields()
