@@ -1,5 +1,5 @@
 /*
- * vue-table.js v1.0.2
+ * vue-table.js v1.0.3
  * (c) 2016 Rati Wannapanop
  * Released under the MIT License.
  */
@@ -152,7 +152,8 @@ Vue.component('vuetable-pagination-dropdown', {
 
 Vue.component('vuetable', {
     template:
-        '<table class="vuetable {{tableClass}}">'
+        '<div class="{{wrapperClass}}">'
+        + '<table class="vuetable {{tableClass}}">'
             + '<thead>'
                 + '<tr>'
                     + '<template v-for="field in fields">'
@@ -198,8 +199,15 @@ Vue.component('vuetable', {
             + '<div class="vuetable-pagination-component {{paginationComponentClass}}">'
                 + '<component :is="paginationComponent"/>'
             + '</div>'
+        + '</div>'
         + '</div>',
     props: {
+        'wrapperClass': {
+            type: String,
+            default: function() {
+                return null
+            }
+        },
         'tableWrapper': {
             type: String,
             default: function() {
