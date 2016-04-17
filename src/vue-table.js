@@ -1,5 +1,5 @@
 /*
- * vue-table.js v1.0.3
+ * vue-table.js v1.0.4
  * (c) 2016 Rati Wannapanop
  * Released under the MIT License.
  */
@@ -546,7 +546,7 @@ Vue.component('vuetable', {
             this.loadData()
         },
         'vuetable:goto-page': function(page) {
-            this.gotoPage(page)
+            this.$emit('vuetable-pagination:change-page', page)
         },
     },
     created: function() {
