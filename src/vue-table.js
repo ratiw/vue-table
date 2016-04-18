@@ -1,5 +1,5 @@
 /*
- * vue-table.js v1.0.4
+ * vue-table.js v1.0.5
  * (c) 2016 Rati Wannapanop
  * Released under the MIT License.
  */
@@ -185,7 +185,7 @@ Vue.component('vuetable', {
                                 + '{{{ callCallback(field, item) }}}'
                             + '</td>'
                             + '<td v-else class="{{field.dataClass}}">'
-                                + '{{ getObjectValue(item, field.name) }}'
+                                + '{{ getObjectValue(item, field.name, "") }}'
                             + '</td>'
                         + '</template>'
                     + '</template>'
@@ -329,6 +329,12 @@ Vue.component('vuetable', {
                     page: 'page',
                     perPage: 'per_page'
                 }
+            }
+        },
+        loadOnStart: {
+            type: String,
+            default: function() {
+                return 'true'
             }
         },
     },
@@ -508,14 +514,16 @@ Vue.component('vuetable', {
         },
         getObjectValue: function(object, path, defaultValue) {
             defaultValue = (typeof defaultValue == 'undefined') ? null : defaultValue
+
             var obj = object
             if (path.trim() != '') {
                 var keys = path.split('.')
                 keys.forEach(function(key) {
-                    if (typeof obj[key] != 'undefined') {
+                    if (typeof obj[key] != 'undefined' && obj[key] !== null) {
                         obj = obj[key]
                     } else {
-                        return defaultValue
+                        obj = defaultValue;
+                        return
                     }
                 })
             }
@@ -551,6 +559,8 @@ Vue.component('vuetable', {
     },
     created: function() {
         this.normalizeFields()
-        this.loadData()
+        if (this.loadOnStart == 'true') {
+            this.loadData()
+        }
     }
 })
