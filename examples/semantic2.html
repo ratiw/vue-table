@@ -22,6 +22,9 @@
       display: none;
     }
 
+    .vuetable {
+        margin-top: 1em !important;
+    }
     .vuetable button.ui.button {
         padding: .5em .5em;
         font-weight: 400;
@@ -92,13 +95,23 @@
     <div class="ui container">
       <div id="content" class="ui basic segment">
       <h3 class="ui header">List of Users</h3>
+      <div class="ui labeled icon input">
+        <div class="ui label">Search:</div>
+        <input v-model="searchFor" class="ui input" @keyup.enter="setFilter"></input>
+        <i class="search icon"></i>
+      </div>
+        <button class="ui button primary" @click="setFilter">Go</button>
+        <button class="ui button" @click="resetFilter">Reset</button>
       <vuetable
-          api-url="http://example.app:8000/api/users"
+          api-url="http://vuetable.ratiw.net/api/users"
+          pagination-path=""
+          pagination-component="vuetable-pagination-dropdown"
           table-wrapper="#content"
           :fields="fields"
           :sort-order="sortOrder"
           :item-actions="itemActions"
-          :per-page="5"
+          :per-page="15"
+          :append-params="moreParams"
       />
       </div>
   </div>
@@ -153,6 +166,8 @@
     new Vue({
         el: '#app',
         data: {
+            searchFor: '',
+            moreParams: [],
             fields: tableColumns,
             sortOrder: {
                 field: 'name',
@@ -181,6 +196,18 @@
                 if (value == null) return ''
                 fmt = (typeof fmt == 'undefined') ? 'D MMM YYYY' : fmt
                 return moment(value, 'YYYY-MM-DD').format(fmt)
+            },
+            setFilter: function() {
+                this.moreParams = [
+                    'filter=' + this.searchFor
+                ]
+                this.$nextTick(function() {
+                    this.$broadcast('vuetable:refresh')
+                })
+            },
+            resetFilter: function() {
+                this.searchFor = ''
+                this.setFilter()
             },
         },
         events: {

@@ -80,9 +80,16 @@
     <div id="app" class="container">
       <!-- Example row of columns -->
         <h2 class="sub-header">List of Users</h2>
+        <hr>
+        <div class="form-inline form-group">
+            <label>Search:</label>
+            <input v-model="searchFor" class="form-control" @keyup.enter="setFilter"></input>
+            <button class="btn btn-primary" @click="setFilter">Go</button>
+            <button class="btn btn-default" @click="resetFilter">Reset</button>
+        </div>
         <div class="table-responsive">
             <vuetable
-                api-url="http://example.app:8000/api/users"
+                api-url="http://vuetable.ratiw.net/api/users"
                 pagination-path=""
                 :fields="fields"
                 :sort-order="sortOrder"
@@ -94,6 +101,7 @@
                 pagination-component-class=""
                 pagination-component="vuetable-pagination-bootstrap"
                 :item-actions="itemActions"
+                :append-params="moreParams"
             ></vuetable>
         </div>
 
@@ -139,14 +147,22 @@
 
     // fields definition
     var tableColumns = [
-        'name',
-        'email',
+        {
+            name: 'name',
+            sortField: 'name',
+        },
+        {
+            name: 'email',
+            sortField: 'email',
+        },
         {
             name: 'nickname',
+            sortField: 'nickname',
             callback: 'allCap'
         },
         {
             name: 'birthdate',
+            sortField: 'birthdate',
             callback: 'formatDate|D/MM/Y'
         },
         {
@@ -178,13 +194,19 @@
     new Vue({
         el: '#app',
         data: {
+            searchFor: '',
             fields: tableColumns,
+            sortOrder: {
+                field: 'name',
+                direction: 'asc'
+            },
             paginationInfoTemplate: 'แสดง {from} ถึง {to} จากทั้งหมด {total} รายการ',
             itemActions: [
                 { name: 'view-item', label: '', icon: 'glyphicon glyphicon-zoom-in', class: 'btn btn-info' },
                 { name: 'edit-item', label: '', icon: 'glyphicon glyphicon-pencil', class: 'btn btn-warning'},
                 { name: 'delete-item', label: '', icon: 'glyphicon glyphicon-remove', class: 'btn btn-danger' }
-            ]
+            ],
+            moreParams: [],
         },
         methods: {
             /**
@@ -206,6 +228,18 @@
             /**
              * Other functions
              */
+            setFilter: function() {
+                this.moreParams = [
+                    'filter=' + this.searchFor
+                ]
+                this.$nextTick(function() {
+                    this.$broadcast('vuetable:refresh')
+                })
+            },
+            resetFilter: function() {
+                this.searchFor = ''
+                this.setFilter()
+            },
             viewProfile: function(hash) {
                 window.location.href = '/staffs/profile/'+hash
             }
