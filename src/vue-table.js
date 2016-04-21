@@ -196,7 +196,7 @@ Vue.component('vuetable', {
             + '<div class="vuetable-pagination-info {{paginationInfoClass}}">'
                 + '{{ paginationInfo }}'
             + '</div>'
-            + '<div class="vuetable-pagination-component {{paginationComponentClass}}">'
+            + '<div v-show="tablePagination && tablePagination.total > 0" class="vuetable-pagination-component {{paginationComponentClass}}">'
                 + '<component :is="paginationComponent"/>'
             + '</div>'
         + '</div>'
@@ -297,6 +297,12 @@ Vue.component('vuetable', {
                 return "Displaying {from} to {to} of {total} items"
             }
         },
+        'paginationInfoNoDataTemplate': {
+            type: String,
+            default: function() {
+                return 'No relevant data'
+            }
+        },
         'paginationClass': {
             type: String,
             default: function() {
@@ -351,12 +357,14 @@ Vue.component('vuetable', {
             return this.sortOrder.direction == 'asc' ? this.ascendingIcon : this.descendingIcon
         },
         paginationInfo: function() {
-            if (this.tablePagination == null) return ''
+            if (this.tablePagination == null || this.tablePagination.total == 0) {
+                return this.paginationInfoNoDataTemplate
+            }
 
             return this.paginationInfoTemplate
-                .replace('{from}', this.tablePagination.from)
-                .replace('{to}', this.tablePagination.to)
-                .replace('{total}', this.tablePagination.total)
+                .replace('{from}', this.tablePagination.from || 0)
+                .replace('{to}', this.tablePagination.to || 0)
+                .replace('{total}', this.tablePagination.total || 0)
         },
     },
     methods: {
@@ -387,7 +395,7 @@ Vue.component('vuetable', {
             this.$http.get(url)
                 .then(function(response) {
                     this.tableData = this.getObjectValue(response.data, this.dataPath, null)
-                    this.tablePagination = this.getObjectValue(response.data, this.paginationPath)
+                    this.tablePagination = this.getObjectValue(response.data, this.paginationPath, null)
                     this.dispatchEvent('load-success', response)
                     this.broadcastEvent('load-success', this.tablePagination)
 
