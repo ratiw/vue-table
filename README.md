@@ -1,6 +1,22 @@
 vuetable - data table simplify!
 ========
 
+- No need to render the table yourself
+- One simple `vuetable` tag
+- Display data retrieved from server with sort options
+- Pagination component included, swap-able and extensible
+- Define fields to map your JSON data structure
+- Define row actions and capture the click event to do whatever you want
+- Field display customizable via callback function inside Vue.js instance
+- Programmatically show/hide any field via reactivity of fields definition
+- Use your favorite CSS framework classes to nicely format your table and dispalyed data
+- Events to allow control from Vue.js instance programmatically
+- Capture events from `vuetable` to manipulate your table and your data
+- Should work with any pre-defined JSON data structure
+- Should work with any CSS Framework, e.g. Semantic UI, Twitter's Bootstrap
+
+---
+
 `vuetable` is a Vue.js component that will automatically request (JSON) data
 from the server and display them nicely in html table with swappable/extensible
 pagination sub-component. You can also add buttons to each row and hook an event
