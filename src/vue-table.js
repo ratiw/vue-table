@@ -1,5 +1,5 @@
 /*
- * vue-table.js v1.0.6
+ * vue-table.js v1.0.7
  * (c) 2016 Rati Wannapanop
  * Released under the MIT License.
  */
@@ -9,7 +9,7 @@
  */
 var paginationMixin = {
     props: {
-        'wrapperClass': {
+         'wrapperClass': {
             type: String,
             default: function() {
                 return 'ui right floated pagination menu'
@@ -136,7 +136,9 @@ Vue.component('vuetable-pagination-dropdown', {
             this.$dispatch('vuetable-pagination:change-page', page)
         },
         setDropdownToPage: function(page) {
-            document.getElementById('vuetable-pagination-dropdown').value = page
+            this.$nextTick(function() {
+                document.getElementById('vuetable-pagination-dropdown').value = page
+            })
         },
         selectPage: function(event) {
             this.$dispatch('vuetable-pagination:change-page', event.target.selectedIndex+1)
@@ -157,47 +159,54 @@ Vue.component('vuetable', {
             + '<thead>'
                 + '<tr>'
                     + '<template v-for="field in fields">'
-                        + '<th v-if="isSpecialField(field.name)" class="{{field.titleClass || \'\'}}">'
-                            + '{{field.title || \'\'}}'
-                        + '</th>'
-                        + '<th v-else'
-                            + ' @click="orderBy(field)"'
-                            + ' class="{{field.titleClass || \'\'}} {{isSortable(field) ? \'sortable\' : \'\'}}">'
-                            + ' {{getTitle(field) | capitalize}} <i v-if="isCurrentSortField(field)" class="{{ sortIcon }}"></i>'
-                        + '</th>'
+                        + '<template v-if="field.visible">'
+                            + '<th v-if="isSpecialField(field.name)" class="{{field.titleClass || \'\'}}">'
+                                + '{{field.title || \'\'}}'
+                            + '</th>'
+                            + '<th v-else'
+                                + ' @click="orderBy(field)"'
+                                + ' class="{{field.titleClass || \'\'}} {{isSortable(field) ? \'sortable\' : \'\'}}">'
+                                + ' {{getTitle(field) | capitalize}} '
+                                + '<i v-if="isCurrentSortField(field)" class="{{ sortIcon }}"></i>'
+                            + '</th>'
+                        + '</template>'
                     + '</template>'
                 + '</tr>'
             + '</thead>'
             + '<tbody v-cloak>'
-                + '<tr v-for="item in tableData">'
+                + '<tr v-for="item in tableData" @click="onRowClicked(item, $event)">'
+                    + '<template v-if="onRowChanged(item)"></template>'
                     + '<template v-for="field in fields">'
-                        + '<template v-if="isSpecialField(field.name)">'
-                            + '<td v-if="field.name == \'__actions\'" class="vuetable-actions {{field.dataClass}}">'
-                                + '<template v-for="action in itemActions">'
-                                    + '<button class="{{ action.class }}" @click="callAction(action.name, item)">'
-                                        + '<i class="{{ action.icon }}"></i> {{ action.label }}'
-                                    + '</button>'
-                                + '</template>'
-                            + '</td>'
-                        + '</template>'
-                        + '<template v-else>'
-                            + '<td v-if="hasCallback(field)" class="{{field.dataClass}}">'
-                                + '{{{ callCallback(field, item) }}}'
-                            + '</td>'
-                            + '<td v-else class="{{field.dataClass}}">'
-                                + '{{ getObjectValue(item, field.name, "") }}'
-                            + '</td>'
+                        + '<template v-if="field.visible">'
+                            + '<template v-if="isSpecialField(field.name)">'
+                                + '<td v-if="field.name == \'__actions\'" class="vuetable-actions {{field.dataClass}}">'
+                                    + '<template v-for="action in itemActions">'
+                                        + '<button class="{{ action.class }}" @click="callAction(action.name, item)">'
+                                            + '<i class="{{ action.icon }}"></i> {{ action.label }}'
+                                        + '</button>'
+                                    + '</template>'
+                                + '</td>'
+                            + '</template>'
+                            + '<template v-else>'
+                                + '<td v-if="hasCallback(field)" class="{{field.dataClass}}">'
+                                    + '{{{ callCallback(field, item) }}}'
+                                + '</td>'
+                                + '<td v-else class="{{field.dataClass}}">'
+                                    + '{{ getObjectValue(item, field.name, "") }}'
+                                + '</td>'
+                            + '</template>'
                         + '</template>'
                     + '</template>'
                 + '</tr>'
             + '</tbody>'
         + '</table>'
         + '<div v-if="showPagination" class="vuetable-pagination {{paginationClass}}">'
-            + '<div class="vuetable-pagination-info {{paginationInfoClass}}">'
-                + '{{ paginationInfo }}'
+            + '<div class="vuetable-pagination-info {{paginationInfoClass}}"'
+                + ' v-html="paginationInfo">'
             + '</div>'
-            + '<div v-show="tablePagination && tablePagination.total > 0" class="vuetable-pagination-component {{paginationComponentClass}}">'
-                + '<component :is="paginationComponent"/>'
+            + '<div v-show="tablePagination && tablePagination.total > 0" '
+                + 'class="vuetable-pagination-component {{paginationComponentClass}}">'
+                + '<component v-ref:pagination :is="paginationComponent"></component>'
             + '</div>'
         + '</div>'
         + '</div>',
@@ -369,25 +378,55 @@ Vue.component('vuetable', {
     },
     methods: {
         normalizeFields: function() {
-            var normalized = []
+            var self = this
+            var obj
             this.fields.forEach(function(field, i) {
                 if (typeof (field) === 'string') {
-                    normalized[i] = { name: field }
+                    obj = {
+                        name: field,
+                        title: self.setTitle(field),
+                        titleClass: '',
+                        dataClass: '',
+                        callback: null,
+                        visible: true
+                    }
                 } else {
-                    normalized[i] = field
+                    obj = {
+                        name: field.name,
+                        title: (field.title === undefined) ? self.setTitle(field.name) : field.title,
+                        sortField: field.sortField,
+                        titleClass: (field.titleClass === undefined) ? '' : field.titleClass,
+                        dataClass: (field.dataClass === undefined) ? '' : field.dataClass,
+                        callback: (field.callback === undefined) ? '' : field.callback,
+                        visible: (field.visible === undefined) ? true : field.visible
+                    }
                 }
+                self.fields.$set(i, obj)
             })
-            this.fields = normalized
+        },
+        setTitle: function(str) {
+            if (this.isSpecialField(str)) {
+                return ''
+            }
+
+            return this.titleCase(str)
+        },
+        titleCase: function(str)
+        {
+            return str.replace(/\w+/g, function(txt){
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
         },
         loadData: function() {
             var wrapper = document.querySelector(this.tableWrapper)
             this.showLoadingAnimation(wrapper)
 
             var params = [
-                this.queryParams.sort+'='+ this.getSortParam(),
-                this.queryParams.page+'='+this.currentPage,
-                this.queryParams.perPage+'='+this.perPage
+                this.queryParams.sort + '=' + this.getSortParam(),
+                this.queryParams.page + '=' + this.currentPage,
+                this.queryParams.perPage + '=' + this.perPage
             ]
+
             var url = this.apiUrl + '?' + params.join('&')
             if (this.appendParams.length > 0) {
                 url += '&'+this.appendParams.join('&')
@@ -542,6 +581,14 @@ Vue.component('vuetable', {
         },
         addParam: function(param) {
             this.appendParams.push(param)
+        },
+        onRowChanged: function(dataItem) {
+            this.$dispatch(this.eventPrefix+'row-changed', dataItem)
+            return true
+        },
+        onRowClicked: function(dataItem, event) {
+            this.$dispatch(this.eventPrefix+'row-clicked', dataItem, event)
+            return true
         },
     },
     events: {

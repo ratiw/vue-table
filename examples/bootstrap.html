@@ -21,6 +21,9 @@
           padding-top: 50px;
           padding-bottom: 20px;
         }
+        ul.dropdown-menu li {
+            margin-left: 20px;
+        }
         .vuetable th.sortable:hover {
             color: #2185d0;
             cursor: pointer;
@@ -46,6 +49,9 @@
         }
         .vuetable-pagination-component {
           float: right;
+        }
+        [v-cloak] {
+            display: none;
         }
     </style>
   </head>
@@ -81,11 +87,32 @@
       <!-- Example row of columns -->
         <h2 class="sub-header">List of Users</h2>
         <hr>
-        <div class="form-inline form-group">
-            <label>Search:</label>
-            <input v-model="searchFor" class="form-control" @keyup.enter="setFilter"></input>
-            <button class="btn btn-primary" @click="setFilter">Go</button>
-            <button class="btn btn-default" @click="resetFilter">Reset</button>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-inline form-group">
+                    <label>Search:</label>
+                    <input v-model="searchFor" class="form-control" @keyup.enter="setFilter">
+                    <button class="btn btn-primary" @click="setFilter">Go</button>
+                    <button class="btn btn-default" @click="resetFilter">Reset</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dropdown pull-right">
+                    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <i class="glyphicon glyphicon-cog"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li v-for="field in fields">
+                            <span class="checkbox">
+                                <label>
+                                    <input type="checkbox" v-model="field.visible">
+                                    {{ field.title == '' ? field.name.replace('__', '') : field.title | capitalize }}
+                                </label>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
         <div class="table-responsive">
             <vuetable
@@ -122,13 +149,13 @@
                 </ul>
             </nav>
         </template>
-    </div>
 
-    <hr>
+        <hr>
 
-    <footer>
-        <p>&copy; 2015 Company, Inc.</p>
-    </footer>
+        <footer>
+            <p>&copy; 2015 Company, Inc.</p>
+        </footer>
+
     </div> <!-- /container -->
 
 
@@ -245,6 +272,12 @@
             }
         },
         events: {
+            'vuetable:row-changed': function(data) {
+                console.log('row-changed:', data.name)
+            },
+            'vuetable:row-clicked': function(data, event) {
+                console.log('clicked:', data.name)
+            },
             'vuetable:action': function(action, data) {
                 console.log('vuetable:action', action, data)
                 if (action == 'viewItem') {
