@@ -1,4 +1,4 @@
-vuetable
+vuetable - data table simplify!
 ========
 
 `vuetable` is a Vue.js component that will automatically request (JSON) data
@@ -115,7 +115,7 @@ defined in `fields` property.
 - `fields` is the fields mapping that will be used to display data in the table.
 You can provide only the name of the fields to be used. But if you would like to get
 the true power of `vuetable`, you must provide some more information.
-Please see [Field Definition](https://github.com/ratiw/vue-table/wiki/Fields-Definition) 
+Please see [Field Definition](https://github.com/ratiw/vue-table/wiki/Fields-Definition)
 section for more detail.
 
 For more detail, please see [documentation in the Wiki pages](https://github.com/ratiw/vue-table/wiki).
