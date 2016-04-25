@@ -1,5 +1,5 @@
 /*
- * vue-table.js v1.0.7
+ * vue-table.js v1.0.8
  * (c) 2016 Rati Wannapanop
  * Released under the MIT License.
  */
@@ -192,7 +192,7 @@ Vue.component('vuetable', {
                                     + '{{{ callCallback(field, item) }}}'
                                 + '</td>'
                                 + '<td v-else class="{{field.dataClass}}">'
-                                    + '{{ getObjectValue(item, field.name, "") }}'
+                                    + '{{{ getObjectValue(item, field.name, "") }}}'
                                 + '</td>'
                             + '</template>'
                         + '</template>'
