@@ -53,6 +53,9 @@
         [v-cloak] {
             display: none;
         }
+        .highlight {
+            background-color: yellow;
+        }
     </style>
   </head>
 
@@ -269,7 +272,28 @@
             },
             viewProfile: function(hash) {
                 window.location.href = '/staffs/profile/'+hash
-            }
+            },
+            preg_quote: function( str ) {
+                // http://kevin.vanzonneveld.net
+                // +   original by: booeyOH
+                // +   improved by: Ates Goral (http://magnetiq.com)
+                // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+                // +   bugfixed by: Onno Marsman
+                // *     example 1: preg_quote("$40");
+                // *     returns 1: '\$40'
+                // *     example 2: preg_quote("*RRRING* Hello?");
+                // *     returns 2: '\*RRRING\* Hello\?'
+                // *     example 3: preg_quote("\\.+*?[^]$(){}=!<>|:");
+                // *     returns 3: '\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:'
+
+                return (str+'').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1");
+            },
+            highlight: function(needle, haystack) {
+                return haystack.replace(
+                    new RegExp('(' + this.preg_quote(needle) + ')', 'ig'),
+                    '<span class="highlight">$1</span>'
+                )
+            },
         },
         events: {
             'vuetable:row-changed': function(data) {
@@ -277,11 +301,23 @@
             },
             'vuetable:row-clicked': function(data, event) {
                 console.log('clicked:', data.name)
+                data.name = '! '+data.name
+                data.nickname = '<i>'+data.nickname+'</i>'
             },
             'vuetable:action': function(action, data) {
                 console.log('vuetable:action', action, data)
                 if (action == 'viewItem') {
                     this.viewProfile(data.hash)
+                }
+            },
+            'vuetable:load-success': function(response) {
+                var data = response.data.data
+                console.log(data)
+                if (this.searchFor !== '') {
+                    for (n in data) {
+                        data[n].name = this.highlight(this.searchFor, data[n].name)
+                        data[n].email = this.highlight(this.searchFor, data[n].email)
+                    }
                 }
             },
             'vuetable:load-error': function(response) {
