@@ -17,6 +17,14 @@ vuetable - data table simplify!
 
 ---
 
+##Live Demo
+- [JSON data structure](http://vuetable.ratiw.net/api/users)
+- [Semantic UI example](http://vuetable.ratiw.net/examples/semantic.html)
+- [Bootstrap UI example](http://vuetable.ratiw.net/examples/bootstrap.html)
+
+---
+
+## What is `vuetable`?
 `vuetable` is a Vue.js component that will automatically request (JSON) data
 from the server and display them nicely in html table with swappable/extensible
 pagination sub-component. You can also add buttons to each row and hook an event
