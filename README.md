@@ -100,6 +100,15 @@ styles in `vuetable` are based on Semantic UI. If you're using Twitter's [Bootst
 css framework, please see [this section](#bootstrap) below.
 
 ## Usage
+
+### Bower
+
+```
+$ bower install vuetable
+```
+
+### Direct include
+
 Just import the `vue-table.js` after `vue.js` and `vue-resource.js` library in your page like so.
 ```html
 	<script src="js/vue.js"></script>
