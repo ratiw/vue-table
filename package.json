@@ -1,0 +1,34 @@
+{
+  "name": "vuetable",
+  "version": "1.0.9",
+  "description": "vue.js table component that will automatically request JSON data from server and display them nicely in HTML table with swap-able/extensible pagination component",
+  "main": "src/vue-table.js",
+  "dependencies": {
+    "vue": "~1.0.21",
+    "vue-resource": "~0.7"
+  },
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ratiw/vue-table.git"
+  },
+  "keywords": [
+    "vue",
+    "vuejs",
+    "table",
+    "component",
+    "json",
+    "pagination"
+  ],
+  "author": "Rati Wannapanop <rati.wannapanop@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ratiw/vue-table/issues"
+  },
+  "homepage": "https://github.com/ratiw/vue-table#readme"
+}
