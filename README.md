@@ -107,6 +107,12 @@ css framework, please see [this section](#bootstrap) below.
 $ bower install vuetable
 ```
 
+### NPM
+
+```
+$ npm install vuetable
+```
+
 ### Direct include
 
 Just import the `vue-table.js` after `vue.js` and `vue-resource.js` library in your page like so.
