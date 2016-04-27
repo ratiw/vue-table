@@ -1,5 +1,5 @@
 /*
- * vue-table.js v1.0.9
+ * vue-table.js v1.0.10
  * (c) 2016 Rati Wannapanop
  * Released under the MIT License.
  */
@@ -160,11 +160,12 @@ Vue.component('vuetable', {
                 + '<tr>'
                     + '<template v-for="field in fields">'
                         + '<template v-if="field.visible">'
-                            + '<th v-if="isSpecialField(field.name)" class="{{field.titleClass || \'\'}}">'
+                            + '<th v-if="isSpecialField(field.name)" id="{{field.name}}" class="{{field.titleClass || \'\'}}">'
                                 + '{{field.title || \'\'}}'
                             + '</th>'
                             + '<th v-else'
                                 + ' @click="orderBy(field)"'
+                                + ' id="_{{field.name}}"'
                                 + ' class="{{field.titleClass || \'\'}} {{isSortable(field) ? \'sortable\' : \'\'}}">'
                                 + ' {{getTitle(field) | capitalize}} '
                                 + '<i v-if="isCurrentSortField(field)" class="{{ sortIcon }}"></i>'
@@ -434,19 +435,20 @@ Vue.component('vuetable', {
             if (this.appendParams.length > 0) {
                 url += '&'+this.appendParams.join('&')
             }
+            var self = this
             this.$http.get(url)
                 .then(function(response) {
-                    this.tableData = this.getObjectValue(response.data, this.dataPath, null)
-                    this.tablePagination = this.getObjectValue(response.data, this.paginationPath, null)
-                    this.dispatchEvent('load-success', response)
-                    this.broadcastEvent('load-success', this.tablePagination)
+                    self.tableData = self.getObjectValue(response.data, self.dataPath, null)
+                    self.tablePagination = self.getObjectValue(response.data, self.paginationPath, null)
+                    self.dispatchEvent('load-success', response)
+                    self.broadcastEvent('load-success', self.tablePagination)
 
-                    this.hideLoadingAnimation(wrapper)
+                    self.hideLoadingAnimation(wrapper)
                 }, function(response) {
-                    this.dispatchEvent('load-error', response)
-                    this.broadcastEvent('load-error', response)
+                    self.dispatchEvent('load-error', response)
+                    self.broadcastEvent('load-error', response)
 
-                    this.hideLoadingAnimation(wrapper)
+                    self.hideLoadingAnimation(wrapper)
                 })
         },
         showLoadingAnimation: function(wrapper) {
