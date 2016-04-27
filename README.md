@@ -97,7 +97,7 @@ And you get this!
 
 Since I'm mainly using [Semantic UI](http://semantic-ui.com) as my default CSS Framework, all the css
 styles in `vuetable` are based on Semantic UI. If you're using Twitter's [Bootstrap](http://getbootstrap.com)
-css framework, please see [this section](#bootstrap) below.
+css framework, please see [documentation in the Wiki pages](https://github.com/ratiw/vue-table/wiki/Using-%60vuetable%60-with-Twitter's-Bootstrap).
 
 ## Usage
 
