@@ -76,6 +76,9 @@ var paginationMixin = {
     events: {
         'vuetable:load-success': function(tablePagination) {
             this.tablePagination = tablePagination
+        },
+        'vuetable-pagination:setting': function(option, value) {
+            this.$set(option, value)
         }
     },
 }
@@ -114,7 +117,7 @@ Vue.component('vuetable-pagination-dropdown', {
             + '<select id="vuetable-pagination-dropdown" class="ui search dropdown" @change="selectPage($event)">'
                 + '<template v-for="n in totalPage">'
                     + '<option class="{{pageClass}}" value="{{n+1}}">'
-                        + 'Page {{n+1}}'
+                        + '{{pageText}} {{n+1}}'
                     + '</option>'
                 + '</template>'
             + '</select>'
@@ -124,6 +127,14 @@ Vue.component('vuetable-pagination-dropdown', {
             + '</a>'
         + '</div>',
     mixins: [paginationMixin],
+    props: {
+        'pageText': {
+            type: String,
+            default: function() {
+                return 'Page'
+            }
+        }
+    },
     methods: {
         loadPage: function(page) {
             // update dropdown value
@@ -440,6 +451,12 @@ Vue.component('vuetable', {
                 .then(function(response) {
                     self.tableData = self.getObjectValue(response.data, self.dataPath, null)
                     self.tablePagination = self.getObjectValue(response.data, self.paginationPath, null)
+                    if (self.tablePagination === null) {
+                        console.warn('vuetable: pagination-path "' + self.paginationPath + '"" not found. '
+                            + 'It looks like the data returned from the sever does not have pagination information.'
+                        )
+                    }
+
                     self.dispatchEvent('load-success', response)
                     self.broadcastEvent('load-success', self.tablePagination)
 
@@ -588,7 +605,7 @@ Vue.component('vuetable', {
             this.appendParams.push(param)
         },
         onRowChanged: function(dataItem) {
-            this.$dispatch(this.eventPrefix+'row-changed', dataItem)
+            this.dispatchEvent('row-changed', dataItem)
             return true
         },
         onRowClicked: function(dataItem, event) {
