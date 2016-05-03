@@ -443,7 +443,7 @@ export default {
             this.appendParams.push(param)
         },
         onRowChanged: function(dataItem) {
-            this.$dispatch(this.eventPrefix+'row-changed', dataItem)
+            this.dispatchEvent('row-changed', dataItem)
             return true
         },
         onRowClicked: function(dataItem, event) {
