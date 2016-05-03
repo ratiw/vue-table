@@ -10,6 +10,9 @@
   "directories": {
     "example": "examples"
   },
+  "browserify": {
+    "transform": ["vueify"]
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
