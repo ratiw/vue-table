@@ -113,6 +113,39 @@ $ bower install vuetable
 $ npm install vuetable
 ```
 
+### Vueify version for Browserify and Webpack
+
+Just `import` or `require` like so,
+
+```javascript
+//
+// firstly, require or import vue and vue-resource
+//
+var Vue = require('vue');
+var VueResource = require('vue-resource');
+Vue.use(VueResource);
+
+//
+// secondly, require or import Vuetable and optional VuetablePagination component
+//
+import Vuetable from 'vuetable/src/components/Vuetable.vue';
+import VuetablePagination from 'vuetable/src/components/VuetablePagination.vue';
+import VuetablePaginationDropdown  from 'vuetable/src/components/VuetablePaginationDropdown.vue';
+import VuetablePaginationBootstrap from 'vuetable/src/components/VuetablePaginationBootstrap.vue';
+
+//
+// thirdly, register components to Vue
+//
+Vue.component('vuetable', Vuetable);
+Vue.component('vuetable-pagination', VuetablePagination)
+Vue.component('vuetable-pagination-dropdown', VuetablePaginationDropdown)
+Vue.component('vuetable-pagination-bootstrap', VuetablePaginationBootstrap)
+
+```
+You can combine the second and third steps into one if you like.
+
+You need to explicitly register the pagination components using `Vue.component()` (instead of just declaring them through the `components:` section); otherwise, the pagination component will not work or swappable or extensible. I *guess* this is because it is embedded inside `vuetable` component.
+
 ### Direct include
 
 Just import the `vue-table.js` after `vue.js` and `vue-resource.js` library in your page like so.
