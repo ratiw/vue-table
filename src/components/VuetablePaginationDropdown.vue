@@ -4,7 +4,7 @@
              class="{{linkClass}} {{isOnFirstPage ? disabledClass : ''}}">
             <i :class="icons.prev"></i>
         </a>
-        <select id="vuetable-pagination-dropdown" class="ui search dropdown" @change="selectPage($event)">
+        <select id="vuetable-pagination-dropdown" class="{{dropdownClass}}" @change="selectPage($event)">
             <template v-for="n in totalPage">
                 <option class="{{pageClass}}" value="{{n+1}}">
                     {{pageText}} {{n+1}}
@@ -24,6 +24,12 @@ import PaginationMixin from './VuetablePaginationMixin.vue'
 export default {
     mixins: [PaginationMixin],
     props: {
+        'dropdownClass': {
+            type: String,
+            default: function() {
+                return 'ui search dropdown'
+            }
+        },
         'pageText': {
             type: String,
             default: function() {
