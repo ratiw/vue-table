@@ -68,6 +68,9 @@ export default {
     events: {
         'vuetable:load-success': function(tablePagination) {
             this.tablePagination = tablePagination
+        },
+        'vuetable-pagination:setting': function(option, value) {
+            this.$set(option, value)
         }
     },
 }
