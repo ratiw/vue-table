@@ -1,5 +1,5 @@
 /*
- * vue-table.js v1.0.10
+ * vue-table.js v1.0.11
  * (c) 2016 Rati Wannapanop
  * Released under the MIT License.
  */
@@ -77,8 +77,10 @@ var paginationMixin = {
         'vuetable:load-success': function(tablePagination) {
             this.tablePagination = tablePagination
         },
-        'vuetable-pagination:setting': function(option, value) {
-            this.$set(option, value)
+        'vuetable-pagination:set-options': function(options) {
+            for (var n in options) {
+                this.$set(n, options[n])
+            }
         }
     },
 }
@@ -114,7 +116,7 @@ Vue.component('vuetable-pagination-dropdown', {
                 + ' class="{{linkClass}} {{isOnFirstPage ? disabledClass : \'\'}}">'
                 + '<i :class="icons.prev"></i>'
             + '</a>'
-            + '<select id="vuetable-pagination-dropdown" class="ui search dropdown" @change="selectPage($event)">'
+            + '<select id="vuetable-pagination-dropdown" class="{{dropdownClass}}" @change="selectPage($event)">'
                 + '<template v-for="n in totalPage">'
                     + '<option class="{{pageClass}}" value="{{n+1}}">'
                         + '{{pageText}} {{n+1}}'
@@ -128,6 +130,12 @@ Vue.component('vuetable-pagination-dropdown', {
         + '</div>',
     mixins: [paginationMixin],
     props: {
+        'dropdownClass': {
+            type: String,
+            default: function() {
+                return 'ui search dropdown'
+            }
+        },
         'pageText': {
             type: String,
             default: function() {
@@ -216,7 +224,7 @@ Vue.component('vuetable', {
             + '<div class="vuetable-pagination-info {{paginationInfoClass}}"'
                 + ' v-html="paginationInfo">'
             + '</div>'
-            + '<div v-show="tablePagination && tablePagination.total > 0" '
+            + '<div v-show="tablePagination && tablePagination.last_page > 1" '
                 + 'class="vuetable-pagination-component {{paginationComponentClass}}">'
                 + '<component v-ref:pagination :is="paginationComponent"></component>'
             + '</div>'
@@ -279,7 +287,7 @@ Vue.component('vuetable', {
         'perPage': {
             type: Number,
             coerce: function(val) {
-                return parseInt(val);
+                return parseInt(val)
             },
             default: function() {
                 return 10
@@ -429,8 +437,8 @@ Vue.component('vuetable', {
         titleCase: function(str)
         {
             return str.replace(/\w+/g, function(txt){
-                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-            });
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+            })
         },
         loadData: function() {
             var wrapper = document.querySelector(this.tableWrapper)
@@ -530,7 +538,7 @@ Vue.component('vuetable', {
             this.sortOrder.field = field.name
             this.sortOrder.sortField = field.sortField
             this.currentPage = 1    // reset page index
-            this.loadData();
+            this.loadData()
         },
         isSortable: function(field) {
             return !(typeof field.sortField == 'undefined')
@@ -591,7 +599,7 @@ Vue.component('vuetable', {
                     if (typeof obj[key] != 'undefined' && obj[key] !== null) {
                         obj = obj[key]
                     } else {
-                        obj = defaultValue;
+                        obj = defaultValue
                         return
                     }
                 })
