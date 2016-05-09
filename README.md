@@ -173,7 +173,7 @@ Then, reference the vuetable via `<vuetable>` tag as following
 				'lastname',
 				'nickname',
 				'birthdate',
-				'group.name_en'
+				'group.name_en',
 				'gender',
 				'last_login',
 				'__actions'
