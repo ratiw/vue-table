@@ -5,29 +5,43 @@
                 <tr>
                     <template v-for="field in fields">
                         <template v-if="field.visible">
-                            <th v-if="isSpecialField(field.name)" id="{{field.name}}" class="{{field.titleClass || ''}}">
-                                {{field.title || ''}}
-                            </th>
-                            <th v-else
-                                 @click="orderBy(field)"
-                                 id="_{{field.name}}"
-                                 class="{{field.titleClass || ''}} {{isSortable(field) ? 'sortable' : ''}}">
-                                 {{getTitle(field) | capitalize}}
-                                 <i v-if="isCurrentSortField(field)" class="{{ sortIcon }}"></i>
-                            </th>
+                            <template v-if="isSpecialField(field.name)">
+                                <th v-if="extractName(field.name) == '__checkbox'" class="{{field.titleClass || ''}}">
+                                    <input type="checkbox" @change="toggleAllCheckboxes($event.target.checked, field.name)">
+                                </th>
+                                <th v-else id="{{field.name}}" class="{{field.titleClass || ''}}">
+                                    {{field.title || ''}}
+                                </th>
+                            </template>
+                            <template v-else>
+                                <th @click="orderBy(field)"
+                                    id="_{{field.name}}"
+                                    class="{{field.titleClass || ''}} {{isSortable(field) ? 'sortable' : ''}}">
+                                    {{getTitle(field) | capitalize}}
+                                    <i v-if="isCurrentSortField(field)" class="{{ sortIcon }}"></i>
+                                </th>
+                            </template>
                         </template>
                     </template>
                 </tr>
             </thead>
             <tbody v-cloak>
-                <tr v-for="item in tableData" @click="onRowClicked(item, $event)">
+                <tr v-for="(itemNumber, item) in tableData" @click="onRowClicked(item, $event)">
                     <template v-if="onRowChanged(item)"></template>
                     <template v-for="field in fields">
                         <template v-if="field.visible">
                             <template v-if="isSpecialField(field.name)">
+                                <td v-if="extractName(field.name) == '__sequence'" class="vuetable-sequence {{field.dataClass}}"
+                                    v-html="tablePagination.from + itemNumber">
+                                </td>
+                                <td v-if="extractName(field.name) == '__checkbox'" class="vuetable-checkboxes {{field.dataClass}}">
+                                    <input type="checkbox"
+                                        @change="toggleCheckbox($event.target.checked, item, field.name)"
+                                        :checked="isSelectedRow(item, field.name)">
+                                </td>
                                 <td v-if="field.name == '__actions'" class="vuetable-actions {{field.dataClass}}">
                                     <template v-for="action in itemActions">
-                                        <button class="{{ action.class }}" @click="callAction(action.name, item)">
+                                        <button class="{{ action.class }}" @click="callAction(action.name, item)" v-attr="action.extra">
                                             <i class="{{ action.icon }}"></i> {{ action.label }}
                                         </button>
                                     </template>
@@ -205,14 +219,29 @@ export default {
                 return true
             }
         },
+        selectedTo: {
+            type: Array,
+            default: function() {
+                return []
+            }
+        }
     },
     data: function() {
         return {
             eventPrefix: 'vuetable:',
             tableData: null,
             tablePagination: null,
-            currentPage: 1
+            currentPage: 1,
         }
+    },
+    directives: {
+        'attr': {
+            update: function(value) {
+                for (var i in value) {
+                    this.el.setAttribute(i, value[i])
+                }
+            }
+        },
     },
     computed: {
         sortIcon: function() {
@@ -442,6 +471,43 @@ export default {
         addParam: function(param) {
             this.appendParams.push(param)
         },
+        toggleCheckbox: function(isChecked, dataItem, fieldName) {
+            var idColumn = this.extractArgs(fieldName)
+            if (idColumn === undefined) {
+                console.warn('You did not provide reference id column with "__checkbox:<column_name>" field!')
+                return
+            }
+            if (isChecked) {
+                this.selectedTo.push(dataItem[idColumn])
+            } else {
+                this.selectedTo.$remove(dataItem[idColumn])
+            }
+        },
+        toggleAllCheckboxes: function(isChecked, fieldName) {
+            var self = this
+            var idColumn = this.extractArgs(fieldName)
+
+            if (isChecked) {
+                this.tableData.forEach(function(dataItem) {
+                    if ( ! self.isSelectedRow(dataItem, fieldName)) {
+                        self.selectedTo.push(dataItem[idColumn])
+                    }
+                })
+            } else {
+                this.tableData.forEach(function(dataItem) {
+                    self.selectedTo.$remove(dataItem[idColumn])
+                })
+            }
+        },
+        isSelectedRow: function(dataItem, fieldName) {
+            return this.selectedTo.indexOf(dataItem[this.extractArgs(fieldName)]) >= 0
+        },
+        extractName: function(string) {
+            return string.split(':')[0].trim()
+        },
+        extractArgs: function(string) {
+            return string.split(':')[1]
+        },
         onRowChanged: function(dataItem) {
             this.dispatchEvent('row-changed', dataItem)
             return true
@@ -470,6 +536,11 @@ export default {
         },
         'vuetable:goto-page': function(page) {
             this.$emit('vuetable-pagination:change-page', page)
+        },
+        'vuetable:set-options': function(options) {
+            for (var n in options) {
+                this.$set(n, options[n])
+            }
         },
     },
     created: function() {
