@@ -7,7 +7,7 @@ vuetable - data table simplify!
 - Pagination component included, swap-able and extensible
 - Define fields to map your JSON data structure
 - Define row actions and capture the click event to do whatever you want
-- Field display customizable via callback function inside Vue.js instance
+- Field display customizable via options and callback function inside Vue.js instance
 - Programmatically show/hide any field via reactivity of fields definition
 - Use your favorite CSS framework classes to nicely format your table and dispalyed data
 - Events to allow control from Vue.js instance programmatically
