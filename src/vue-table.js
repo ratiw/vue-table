@@ -1,5 +1,5 @@
 /*
- * vue-table.js v1.0.12
+ * vue-table.js v1.1.0
  * (c) 2016 Rati Wannapanop
  * Released under the MIT License.
  */
@@ -13,6 +13,12 @@ var paginationMixin = {
             type: String,
             default: function() {
                 return 'ui right floated pagination menu'
+            }
+        },
+        'activeClass': {
+            type: String,
+            default: function() {
+                return 'active large'
             }
         },
         'disabledClass': {
@@ -37,11 +43,22 @@ var paginationMixin = {
             type: Object,
             default: function() {
                 return {
+                    first: 'angle double left icon',
                     prev: 'left chevron icon',
-                    next: 'right chevron icon'
+                    next: 'right chevron icon',
+                    last: 'angle double right icon',
                 }
             }
-        }
+        },
+        'onEachSide': {
+            type: Number,
+            coerce: function(value) {
+                return parseInt(value)
+            },
+            default: function() {
+                return 2
+            }
+        },
     },
     data: function() {
         return {
@@ -63,6 +80,21 @@ var paginationMixin = {
             return this.tablePagination == null
                 ? false
                 : this.tablePagination.current_page == this.tablePagination.last_page
+        },
+        notEnoughPages: function() {
+            return this.totalPage < (this.onEachSide * 2) + 4
+        },
+        windowSize: function() {
+            return this.onEachSide * 2 +1;
+        },
+        windowStart: function() {
+            if (this.tablePagination.current_page <= this.onEachSide) {
+                return 1
+            } else if (this.tablePagination.current_page >= (this.totalPage - this.onEachSide)) {
+                return this.totalPage - this.onEachSide*2
+            }
+
+            return this.tablePagination.current_page - this.onEachSide
         },
     },
     methods: {
@@ -91,21 +123,43 @@ var paginationMixin = {
 Vue.component('vuetable-pagination', {
     template:
         '<div class="{{wrapperClass}}">'
-            + ' <a @click="loadPage(\'prev\')"'
-                + ' class="{{linkClass}} {{isOnFirstPage ? disabledClass : \'\'}}">'
-                    + ' <i :class="icons.prev"></i>'
-            + ' </a>'
-            + ' <template v-for="n in totalPage">'
-                + ' <a @click="loadPage(n+1)"'
-                   + ' class="{{pageClass}} {{isCurrentPage(n+1) ? disabledClass : \'\'}}">'
-                        + ' {{ n+1 }}'
-                + ' </a>'
-            + ' </template>'
-            + ' <a @click="loadPage(\'next\')"'
-                + ' class="{{linkClass}} {{isOnLastPage ? disabledClass : \'\'}}">'
-                + ' <i :class="icons.next"></i>'
-            + ' </a>'
-        + ' </div>',
+            + '<a @click="loadPage(1)" '
+                + 'class="btn-nav {{linkClass}} {{isOnFirstPage ? disabledClass : \'\'}}">'
+                    + '<i v-if="icons.first != \'\'" class="{{icons.first}}"></i>'
+                    + '<span v-else>&laquo;</span>'
+            + '</a>'
+            + '<a @click="loadPage(\'prev\')" '
+                + 'class="btn-nav {{linkClass}} {{isOnFirstPage ? disabledClass : \'\'}}">'
+                    + '<i v-if="icons.next != \'\'" class="{{icons.prev}}"></i>'
+                    + '<span v-else>&nbsp;&lsaquo;</span>'
+            + '</a>'
+            + '<template v-if="notEnoughPages">'
+                + '<template v-for="n in totalPage">'
+                    + '<a @click="loadPage(n+1)" '
+                        + 'class="{{pageClass}} {{isCurrentPage(n+1) ? activeClass : \'\'}}">'
+                            + '{{ n+1 }}'
+                    + '</a>'
+                + '</template>'
+            + '</template>'
+            + '<template v-else>'
+               + '<template v-for="n in windowSize">'
+                   + '<a @click="loadPage(windowStart+n)"  '
+                        + 'class="{{pageClass}} {{isCurrentPage(windowStart+n) ? activeClass : \'\'}}">'
+                        + '{{ windowStart+n }}'
+                   + '</a>'
+               + '</template>'
+            + '</template>'
+            + '<a @click="loadPage(\'next\')" '
+                + 'class="btn-nav {{linkClass}} {{isOnLastPage ? disabledClass : \'\'}}">'
+                + '<i v-if="icons.next != \'\'" class="{{icons.next}}"></i>'
+                + '<span v-else>&rsaquo;&nbsp;</span>'
+            + '</a>'
+            + '<a @click="loadPage(totalPage)" '
+                + 'class="btn-nav {{linkClass}} {{isOnLastPage ? disabledClass : \'\'}}">'
+                + '<i v-if="icons.last != \'\'" class="{{icons.last}}"></i>'
+                + '<span v-else>&raquo;</span>'
+            + '</a>'
+        + '</div>',
     mixins: [paginationMixin],
 })
 
@@ -191,7 +245,7 @@ Vue.component('vuetable', {
                                 + '<th @click="orderBy(field)"'
                                     + 'id="_{{field.name}}"'
                                     + 'class="{{field.titleClass || \'\'}} {{isSortable(field) ? \'sortable\' : \'\'}}">'
-                                    + '{{getTitle(field) | capitalize}}'
+                                    + '{{getTitle(field) | capitalize}}&nbsp;'
                                     + '<i v-if="isCurrentSortField(field)" class="{{ sortIcon }}"></i>'
                                 + '</th>'
                             + '</template>'
@@ -200,7 +254,7 @@ Vue.component('vuetable', {
                 + '</tr>'
             + '</thead>'
             + '<tbody v-cloak>'
-                + '<tr v-for="item in tableData" @click="onRowClicked(item, $event)">'
+                + '<tr v-for="(itemNumber, item) in tableData" @click="onRowClicked(item, $event)">'
                     + '<template v-if="onRowChanged(item)"></template>'
                     + '<template v-for="field in fields">'
                         + '<template v-if="field.visible">'
@@ -358,13 +412,19 @@ Vue.component('vuetable', {
         'paginationInfoClass': {
             type: String,
             default: function() {
-                return 'left floated left aligned six wide column'
+                return 'left floated left aligned four wide column'
             }
         },
         'paginationComponentClass': {
             type: String,
             default: function() {
-                return 'right floated right aligned six wide column'
+                return 'right floated right aligned eight wide column'
+            }
+        },
+        'paginationConfig': {
+            type: String,
+            default: function() {
+                return 'paginationConfig'
             }
         },
         itemActions: {
@@ -686,6 +746,11 @@ Vue.component('vuetable', {
             this.$dispatch(this.eventPrefix+'row-clicked', dataItem, event)
             return true
         },
+        callPaginationConfig: function() {
+            if (typeof this.$parent[this.paginationConfig] === 'function') {
+                this.$parent[this.paginationConfig].call(this.$parent, this.$refs.pagination.$options.name)
+            }
+        },
     },
     events: {
         'vuetable-pagination:change-page': function(page) {
@@ -718,5 +783,8 @@ Vue.component('vuetable', {
         if (this.loadOnStart) {
             this.loadData()
         }
+        this.$nextTick(function() {
+            this.callPaginationConfig()
+        })
     }
 })

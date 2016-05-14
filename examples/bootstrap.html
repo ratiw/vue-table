@@ -12,7 +12,7 @@
     <title>vuetable - Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
 
     <style>
@@ -38,6 +38,10 @@
           margin-right: 4px;
         }
         .vuetable-pagination {
+            margin: 0;
+        }
+        .vuetable-pagination .btn {
+            margin: 2px;
         }
         .vuetable-pagination-info {
             float: left;
@@ -50,11 +54,56 @@
         .vuetable-pagination-component {
           float: right;
         }
+        .vuetable-pagination-component li a {
+            cursor: pointer;
+        }
         [v-cloak] {
             display: none;
         }
         .highlight {
             background-color: yellow;
+        }
+
+        /* Loading Animation: */
+        .vuetable-wrapper {
+            opacity: 1;
+            position: relative;
+            filter: alpha(opacity=100); /* IE8 and earlier */
+        }
+        .vuetable-wrapper.loading {
+          opacity:0.4;
+           transition: opacity .3s ease-in-out;
+           -moz-transition: opacity .3s ease-in-out;
+           -webkit-transition: opacity .3s ease-in-out;
+        }
+        .vuetable-wrapper.loading:after {
+          position: absolute;
+          content: '';
+          top: 40%;
+          left: 50%;
+          margin: -30px 0 0 -30px;
+          border-radius: 100%;
+          -webkit-animation-fill-mode: both;
+                  animation-fill-mode: both;
+          border: 4px solid #000;
+          height: 60px;
+          width: 60px;
+          background: transparent !important;
+          display: inline-block;
+          -webkit-animation: pulse 1s 0s ease-in-out infinite;
+                  animation: pulse 1s 0s ease-in-out infinite;
+        }
+        @keyframes pulse {
+          0% {
+            -webkit-transform: scale(0.6);
+                    transform: scale(0.6); }
+          50% {
+            -webkit-transform: scale(1);
+                    transform: scale(1);
+                 border-width: 12px; }
+          100% {
+            -webkit-transform: scale(0.6);
+                    transform: scale(0.6); }
         }
     </style>
   </head>
@@ -91,7 +140,7 @@
         <h2 class="sub-header">List of Users</h2>
         <hr>
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-5">
                 <div class="form-inline form-group">
                     <label>Search:</label>
                     <input v-model="searchFor" class="form-control" @keyup.enter="setFilter">
@@ -99,8 +148,20 @@
                     <button class="btn btn-default" @click="resetFilter">Reset</button>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="dropdown pull-right">
+            <div class="col-md-7">
+                <div class="dropdown form-inline pull-right">
+                    <label>Pagination:</label>
+                    <select class="ui simple dropdown" v-model="paginationComponent">
+                        <option value="vuetable-pagination">vuetable-pagination</option>
+                        <option value="vuetable-pagination-dropdown">vuetable-pagination-dropdown</option>
+                    </select>
+                    <label>Per Page:</label>
+                    <select class="form-control" v-model="perPage">
+                        <option value=10>10</option>
+                        <option value=15>15</option>
+                        <option value=20>20</option>
+                        <option value=25>25</option>
+                    </select>
                     <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                         <i class="glyphicon glyphicon-cog"></i>
                     </button>
@@ -118,7 +179,7 @@
             </div>
         </div>
         <div class="table-responsive">
-            <vuetable
+            <vuetable v-ref:vuetable
                 api-url="http://vuetable.ratiw.net/api/users"
                 pagination-path=""
                 :fields="fields"
@@ -129,34 +190,19 @@
                 pagination-class=""
                 pagination-info-class=""
                 pagination-component-class=""
-                pagination-component="vuetable-pagination-bootstrap"
+                :pagination-component="paginationComponent"
                 :item-actions="itemActions"
                 :append-params="moreParams"
+                :per-page="perPage"
+                wrapper-class="vuetable-wrapper"
+                table-wrapper=".vuetable-wrapper"
+                loading-class="loading"
             ></vuetable>
         </div>
-
-        <template id="vuetable-pagination-bootstrap-template">
-            <nav>
-                <ul class="pagination">
-                    <li class="{{isOnFirstPage ? disabledClass : ''}}">
-                        <a @click="loadPage('prev')"><i class="glyphicon glyphicon-chevron-left"></i></a>
-                    </li>
-                    <template v-for="n in totalPage">
-                        <li class="{{isCurrentPage(n+1) ? ' active' : ''}}">
-                            <a @click="loadPage(n+1)"> {{ n+1 }}</a>
-                        </li>
-                    </template>
-                    <li class="{{isOnLastPage ? disabledClass : ''}}">
-                        <a @click="loadPage('next')"><i class="glyphicon glyphicon-chevron-right"></i></a>
-                    </li>
-                </ul>
-            </nav>
-        </template>
-
         <hr>
 
         <footer>
-            <p>&copy; 2015 Company, Inc.</p>
+            <p>&copy; 2016 Company, Inc.</p>
         </footer>
 
     </div> <!-- /container -->
@@ -165,13 +211,13 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment-with-locales.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.22/vue.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.7.0/vue-resource.min.js"></script>
-    <script src="../src/vue-table.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment-with-locales.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.24/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.7.0/vue-resource.min.js"></script>
+<script src="../src/vue-table.js"></script>
     <script>
     var E_SERVER_ERROR = 'Error communicating with the server'
 
@@ -198,28 +244,17 @@
         {
             name: 'gender',
             sortField: 'gender',
-            titleClass: 'center aligned',
-            dataClass: 'center aligned',
+            titleClass: 'text-center',
+            dataClass: 'text-center',
             callback: 'gender'
         },
         {
             name: '__actions',
-            dataClass: 'center aligned',
+            dataClass: 'text-center',
         }
     ]
 
     Vue.config.debug = true
-
-    // create pagination component using bootstrap styling
-    Vue.component('vuetable-pagination-bootstrap', {
-        template: '#vuetable-pagination-bootstrap-template',
-        mixins: [paginationMixin],
-        methods: {
-            loadPage: function(page) {
-                this.$dispatch('vuetable-pagination:change-page', page)
-            },
-        },
-    })
 
     new Vue({
         el: '#app',
@@ -230,13 +265,24 @@
                 field: 'name',
                 direction: 'asc'
             },
+            perPage: 10,
+            paginationComponent: 'vuetable-pagination',
             paginationInfoTemplate: 'แสดง {from} ถึง {to} จากทั้งหมด {total} รายการ',
             itemActions: [
-                { name: 'view-item', label: '', icon: 'glyphicon glyphicon-zoom-in', class: 'btn btn-info' },
-                { name: 'edit-item', label: '', icon: 'glyphicon glyphicon-pencil', class: 'btn btn-warning'},
-                { name: 'delete-item', label: '', icon: 'glyphicon glyphicon-remove', class: 'btn btn-danger' }
+                { name: 'view-item', label: '', icon: 'glyphicon glyphicon-zoom-in', class: 'btn btn-info', extra: {'title': 'View', 'data-toggle':"tooltip", 'data-placement': "left"} },
+                { name: 'edit-item', label: '', icon: 'glyphicon glyphicon-pencil', class: 'btn btn-warning', extra: {title: 'Edit', 'data-toggle':"tooltip", 'data-placement': "top"} },
+                { name: 'delete-item', label: '', icon: 'glyphicon glyphicon-remove', class: 'btn btn-danger', extra: {title: 'Delete', 'data-toggle':"tooltip", 'data-placement': "right" } }
             ],
             moreParams: [],
+        },
+        watch: {
+            'perPage': function(val, oldVal) {
+                this.$broadcast('vuetable:refresh')
+            },
+            'paginationComponent': function(val, oldVal) {
+                this.$broadcast('vuetable:load-success', this.$refs.vuetable.tablePagination)
+                this.paginationConfig(this.paginationComponent)
+            }
         },
         methods: {
             /**
@@ -270,9 +316,6 @@
                 this.searchFor = ''
                 this.setFilter()
             },
-            viewProfile: function(hash) {
-                window.location.href = '/staffs/profile/'+hash
-            },
             preg_quote: function( str ) {
                 // http://kevin.vanzonneveld.net
                 // +   original by: booeyOH
@@ -294,6 +337,25 @@
                     '<span class="highlight">$1</span>'
                 )
             },
+            paginationConfig: function(componentName) {
+                console.log('paginationConfig: ', componentName)
+                if (componentName == 'vuetable-pagination') {
+                    this.$broadcast('vuetable-pagination:set-options', {
+                        wrapperClass: 'pagination',
+                        icons: { first: '', prev: '', next: '', last: ''},
+                        activeClass: 'active',
+                        linkClass: 'btn btn-default',
+                        pageClass: 'btn btn-default'
+                    })
+                }
+                if (componentName == 'vuetable-pagination-dropdown') {
+                    this.$broadcast('vuetable-pagination:set-options', {
+                        wrapperClass: 'form-inline',
+                        icons: { prev: 'glyphicon glyphicon-chevron-left', next: 'glyphicon glyphicon-chevron-right' },
+                        dropdownClass: 'form-control'
+                    })
+                }
+            }
         },
         events: {
             'vuetable:row-changed': function(data) {
@@ -306,12 +368,17 @@
             },
             'vuetable:action': function(action, data) {
                 console.log('vuetable:action', action, data)
-                if (action == 'viewItem') {
-                    this.viewProfile(data.hash)
+                if (action == 'view-item') {
+                    sweetAlert(action, data.name)
+                } else if (action == 'edit-item') {
+                    sweetAlert(action, data.name)
+                } else if (action == 'delete-item') {
+                    sweetAlert(action, data.name)
                 }
             },
             'vuetable:load-success': function(response) {
                 var data = response.data.data
+                console.log(data)
                 if (this.searchFor !== '') {
                     for (n in data) {
                         data[n].name = this.highlight(this.searchFor, data[n].name)

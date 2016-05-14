@@ -17,7 +17,7 @@
                                 <th @click="orderBy(field)"
                                     id="_{{field.name}}"
                                     class="{{field.titleClass || ''}} {{isSortable(field) ? 'sortable' : ''}}">
-                                    {{getTitle(field) | capitalize}}
+                                    {{getTitle(field) | capitalize}}&nbsp;
                                     <i v-if="isCurrentSortField(field)" class="{{ sortIcon }}"></i>
                                 </th>
                             </template>
@@ -195,6 +195,12 @@ export default {
             type: String,
             default: function() {
                 return 'right floated right aligned six wide column'
+            }
+        },
+        'paginationConfig': {
+            type: String,
+            default: function() {
+                return 'paginationConfig'
             }
         },
         itemActions: {
@@ -516,6 +522,11 @@ export default {
             this.$dispatch(this.eventPrefix+'row-clicked', dataItem, event)
             return true
         },
+        callPaginationConfig: function() {
+            if (typeof this.$parent[this.paginationConfig] === 'function') {
+                this.$parent[this.paginationConfig].call(this.$parent, this.$refs.pagination.$options.name)
+            }
+        },
     },
     events: {
         'vuetable-pagination:change-page': function(page) {
@@ -548,6 +559,9 @@ export default {
         if (this.loadOnStart) {
             this.loadData()
         }
+        this.$nextTick(function() {
+            this.callPaginationConfig()
+        })
     }
 }
 </script>

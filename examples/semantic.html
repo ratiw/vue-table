@@ -24,6 +24,9 @@
         .vuetable {
             margin-top: 1em !important;
         }
+        .vuetable-wrapper.ui.basic.segment {
+            padding: 0em;
+        }
         .vuetable button.ui.button {
             padding: .5em .5em;
             font-weight: 400;
@@ -112,6 +115,13 @@
                             <option value="vuetable-pagination">vuetable-pagination</option>
                             <option value="vuetable-pagination-dropdown">vuetable-pagination-dropdown</option>
                         </select>
+                        <label>Per Page:</label>
+                        <select class="ui simple dropdown" v-model="perPage">
+                            <option value=10>10</option>
+                            <option value=15>15</option>
+                            <option value=20>20</option>
+                            <option value=25>25</option>
+                        </select>
                         <div class="ui simple dropdown">
                             <button class="ui icon button"><i class="ui setting icon"></i></button>
                             <div v-cloak class="left menu">
@@ -129,11 +139,12 @@
                 api-url="http://vuetable.ratiw.net/api/users"
                 pagination-path=""
                 :pagination-component="paginationComponent"
-                table-wrapper="#content"
+                wrapper-class="vuetable-wrapper ui basic segment"
+                table-wrapper=".vuetable-wrapper"
                 :fields="fields"
                 :sort-order="sortOrder"
                 :item-actions="itemActions"
-                :per-page="10"
+                :per-page="perPage"
                 :append-params="moreParams"
             />
         </div>
@@ -143,8 +154,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment-with-locales.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.22/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.24/vue.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.7.0/vue-resource.min.js"></script>
 <script src="../src/vue-table.js"></script>
 <script>
@@ -157,7 +168,7 @@
         {
             name: 'email',
             sortField: 'email',
-            visible: false
+            visible: true
         },
         {
             name: 'nickname',
@@ -196,7 +207,8 @@
                 field: 'name',
                 direction: 'asc',
             },
-            paginationComponent: 'vuetable-pagination-dropdown',
+            paginationComponent: 'vuetable-pagination',
+            perPage: 10,
             paginationInfoTemplate: 'แสดง {from} ถึง {to} จากทั้งหมด {total} รายการ',
             itemActions: [
                 { name: 'view-item', label: '', icon: 'zoom icon', class: 'ui teal button' },
@@ -205,6 +217,9 @@
             ]
         },
         watch: {
+            'perPage': function(val, oldVal) {
+                this.$broadcast('vuetable:refresh')
+            },
             'paginationComponent': function(val, oldVal) {
                 this.$broadcast('vuetable:load-success', this.$refs.vuetable.tablePagination)
             }
