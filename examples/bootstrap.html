@@ -341,6 +341,7 @@
                 console.log('paginationConfig: ', componentName)
                 if (componentName == 'vuetable-pagination') {
                     this.$broadcast('vuetable-pagination:set-options', {
+                        wrapperClass: 'pagination',
                         icons: { first: '', prev: '', next: '', last: ''},
                         activeClass: 'active',
                         linkClass: 'btn btn-default',
@@ -349,7 +350,9 @@
                 }
                 if (componentName == 'vuetable-pagination-dropdown') {
                     this.$broadcast('vuetable-pagination:set-options', {
-                        icons: { prev: 'glyphicon glyphicon-chevron-left', next: 'glyphicon glyphicon-chevron-right' }
+                        wrapperClass: 'form-inline',
+                        icons: { prev: 'glyphicon glyphicon-chevron-left', next: 'glyphicon glyphicon-chevron-right' },
+                        dropdownClass: 'form-control'
                     })
                 }
             }
