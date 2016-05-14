@@ -1,6 +1,6 @@
 {
   "name": "vuetable",
-  "version": "1.0.11",
+  "version": "1.1.0",
   "description": "vue.js table component that will automatically request JSON data from server and display them nicely in HTML table with swap-able/extensible pagination component",
   "main": "src/vue-table.js",
   "dependencies": {
