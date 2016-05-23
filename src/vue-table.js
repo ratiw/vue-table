@@ -276,10 +276,10 @@ Vue.component('vuetable', {
                                 + '</td>'
                             + '</template>'
                             + '<template v-else>'
-                                + '<td v-if="hasCallback(field)" class="{{field.dataClass}}">'
+                                + '<td v-if="hasCallback(field)" class="{{field.dataClass}}" @dblclick="onCellDoubleClicked(item, field, $event)">'
                                     + '{{{ callCallback(field, item) }}}'
                                 + '</td>'
-                                + '<td v-else class="{{field.dataClass}}">'
+                                + '<td v-else class="{{field.dataClass}}" @dblclick="onCellDoubleClicked(item, field, $event)">'
                                     + '{{{ getObjectValue(item, field.name, "") }}}'
                                 + '</td>'
                             + '</template>'
@@ -745,6 +745,9 @@ Vue.component('vuetable', {
         onRowClicked: function(dataItem, event) {
             this.$dispatch(this.eventPrefix+'row-clicked', dataItem, event)
             return true
+        },
+        onCellDoubleClicked: function(dataItem, field, event) {
+            this.$dispatch(this.eventPrefix+'cell-dblclicked', dataItem, field, event)
         },
         callPaginationConfig: function() {
             if (typeof this.$parent[this.paginationConfig] === 'function') {
