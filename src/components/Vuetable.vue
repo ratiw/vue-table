@@ -232,17 +232,17 @@ export default {
             }
         },
         httpData: {
-            type: Array,
+            type: Object,
             default: function() {
-                return []
+                return {}
             }
         },
         httpOptions: {
-            type: Array,
+            type: Object,
             default: function() {
-                return []
+                return {}
             }
-        }
+        },
     },
     data: function() {
         return {
