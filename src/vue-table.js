@@ -454,7 +454,19 @@ Vue.component('vuetable', {
             default: function() {
                 return []
             }
-        }
+        },
+        httpData: {
+            type: Array,
+            default: function() {
+                return []
+            }
+        },
+        httpOptions: {
+            type: Array,
+            default: function() {
+                return []
+            }
+        },
     },
     data: function() {
         return {
@@ -544,7 +556,7 @@ Vue.component('vuetable', {
                 url += '&'+this.appendParams.join('&')
             }
             var self = this
-            this.$http.get(url)
+            this.$http.get(url, this.httpData, this.httpOptions)
                 .then(function(response) {
                     self.tableData = self.getObjectValue(response.data, self.dataPath, null)
                     self.tablePagination = self.getObjectValue(response.data, self.paginationPath, null)
