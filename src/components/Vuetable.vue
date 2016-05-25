@@ -48,10 +48,10 @@
                                 </td>
                             </template>
                             <template v-else>
-                                <td v-if="hasCallback(field)" class="{{field.dataClass}}">
+                                <td v-if="hasCallback(field)" class="{{field.dataClass}}" @dblclick="onCellDoubleClicked(item, field, $event)">
                                     {{{ callCallback(field, item) }}}
                                 </td>
-                                <td v-else class="{{field.dataClass}}">
+                                <td v-else class="{{field.dataClass}}" @dblclick="onCellDoubleClicked(item, field, $event)">
                                     {{{ getObjectValue(item, field.name, "") }}}
                                 </td>
                             </template>
@@ -230,10 +230,23 @@ export default {
             default: function() {
                 return []
             }
-        }
+        },
+        httpData: {
+            type: Object,
+            default: function() {
+                return {}
+            }
+        },
+        httpOptions: {
+            type: Object,
+            default: function() {
+                return {}
+            }
+        },
     },
     data: function() {
         return {
+            version: '1.1.1',
             eventPrefix: 'vuetable:',
             tableData: null,
             tablePagination: null,
@@ -320,7 +333,7 @@ export default {
                 url += '&'+this.appendParams.join('&')
             }
             var self = this
-            this.$http.get(url)
+            this.$http.get(url, this.httpData, this.httpOptions)
                 .then(function(response) {
                     self.tableData = self.getObjectValue(response.data, self.dataPath, null)
                     self.tablePagination = self.getObjectValue(response.data, self.paginationPath, null)
@@ -521,6 +534,9 @@ export default {
         onRowClicked: function(dataItem, event) {
             this.$dispatch(this.eventPrefix+'row-clicked', dataItem, event)
             return true
+        },
+        onCellDoubleClicked: function(dataItem, field, event) {
+            this.$dispatch(this.eventPrefix+'cell-dblclicked', dataItem, field, event)
         },
         callPaginationConfig: function() {
             if (typeof this.$parent[this.paginationConfig] === 'function') {
