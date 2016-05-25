@@ -202,7 +202,7 @@ It seems to work just fine in **Microsoft Edge** though. Anyway, if you find tha
 
 <a id="contribute"></a>
 ## Contributions
-Any contribution to the code (via pull request would be nice) or any part of the documentation and any idea and/or suggestion are very welcome.
+Any contribution to the code (via pull request would be nice) or any part of the documentation (the Wiki always need some love and care) and any idea and/or suggestion are very welcome.
 
 However, please do not feel bad if your pull requests or contributions do not get merged or implemented into `vuetable`. 
 
