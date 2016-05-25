@@ -246,6 +246,7 @@ export default {
     },
     data: function() {
         return {
+            version: '1.1.1',
             eventPrefix: 'vuetable:',
             tableData: null,
             tablePagination: null,

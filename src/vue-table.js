@@ -1,5 +1,5 @@
 /*
- * vue-table.js v1.1.0
+ * vue-table.js v1.1.1
  * (c) 2016 Rati Wannapanop
  * Released under the MIT License.
  */
@@ -470,6 +470,7 @@ Vue.component('vuetable', {
     },
     data: function() {
         return {
+            version: '1.1.1',
             eventPrefix: 'vuetable:',
             tableData: null,
             tablePagination: null,
