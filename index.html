@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>vuetable - data table simplify! by ratiw</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">vuetable - data table simplify!</h1>
+      <h2 class="project-tagline"></h2>
+      <a href="https://github.com/ratiw/vue-table" class="btn">View on GitHub</a>
+      <a href="https://github.com/ratiw/vue-table/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/ratiw/vue-table/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h2>
+<a id="simplify-table-creation-and-display" class="anchor" href="#simplify-table-creation-and-display" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Simplify table creation and display</h2>
+
+<ul>
+<li>No need to render the table yourself</li>
+<li>One simple <code>vuetable</code> tag</li>
+<li>Display data retrieved from server with sort options</li>
+<li>Pagination component included, swap-able and extensible</li>
+<li>Define fields to map your JSON data structure</li>
+<li>Define row actions and capture the click event to do whatever you want</li>
+<li>Customizable field content to display via options and callback function inside Vue.js instance</li>
+<li>Programmatically show/hide any field via reactivity of fields definition</li>
+<li>Use your favorite CSS framework classes to nicely format your table and displayed data</li>
+<li>Events to allow control from Vue.js instance programmatically</li>
+<li>Capture custom events from <code>vuetable</code> to manipulate your table and your data</li>
+<li>Should work with any pre-defined JSON data structure</li>
+<li>Should work with any CSS Framework, e.g. Semantic UI, Twitter's Bootstrap</li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="live-demo" class="anchor" href="#live-demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Live Demo</h2>
+
+<ul>
+<li><a href="http://vuetable.ratiw.net/api/users">JSON data structure</a></li>
+<li><a href="http://vuetable.ratiw.net/examples/semantic.html">Semantic UI example</a></li>
+<li><a href="http://vuetable.ratiw.net/examples/bootstrap.html">Bootstrap UI example</a></li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="what-is-vuetable" class="anchor" href="#what-is-vuetable" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What is vuetable?</h2>
+
+<p><code>vuetable</code> is a Vue.js component that will automatically request (JSON) data
+from the server and display them nicely in html table with swappable/extensible
+pagination sub-component. You can also add buttons to each row and hook an event
+to it</p>
+
+<p><img src="https://i.imgsafe.org/d46e5e1.gif" alt="image"></p>
+
+<blockquote>
+<p>Please note that all the examples show in here are styling using Semantic UI CSS Framework,
+but <code>vuetable</code> should be able to work with any CSS framwork including Twitter's Bootstrap.
+Please read through and see more info <a href="#bootstrap">below</a>.</p>
+</blockquote>
+
+<p>You do this:</p>
+
+<div class="highlight highlight-text-html-basic"><pre>    &lt;<span class="pl-ent">div</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>app<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>ui vertical stripe segment<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>ui container<span class="pl-pds">"</span></span>&gt;
+            &lt;<span class="pl-ent">div</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>content<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>ui basic segment<span class="pl-pds">"</span></span>&gt;
+                &lt;<span class="pl-ent">h3</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>ui header<span class="pl-pds">"</span></span>&gt;List of Users&lt;/<span class="pl-ent">h3</span>&gt;
+                &lt;<span class="pl-ent">vuetable</span>
+                    <span class="pl-e">api-url</span>=<span class="pl-s"><span class="pl-pds">"</span>http://example.app:8000/api/users<span class="pl-pds">"</span></span>
+                    <span class="pl-e">table-wrapper</span>=<span class="pl-s"><span class="pl-pds">"</span>#content<span class="pl-pds">"</span></span>
+                    :<span class="pl-e">fields</span>=<span class="pl-s"><span class="pl-pds">"</span>columns<span class="pl-pds">"</span></span>
+                    :<span class="pl-e">item-actions</span>=<span class="pl-s"><span class="pl-pds">"</span>itemActions<span class="pl-pds">"</span></span>
+                &gt;&lt;/<span class="pl-ent">vuetable</span>&gt;
+            &lt;/<span class="pl-ent">div</span>&gt;
+        &lt;/<span class="pl-ent">div</span>&gt;
+    &lt;/<span class="pl-ent">div</span>&gt;</pre></div>
+
+<div class="highlight highlight-source-js"><pre>    <span class="pl-k">&lt;</span>script<span class="pl-k">&gt;</span>
+        <span class="pl-k">new</span> <span class="pl-en">Vue</span>({
+            el<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>#app<span class="pl-pds">'</span></span>,
+            data<span class="pl-k">:</span> {
+                columns<span class="pl-k">:</span> [
+                    <span class="pl-s"><span class="pl-pds">'</span>name<span class="pl-pds">'</span></span>,
+                    <span class="pl-s"><span class="pl-pds">'</span>nickname<span class="pl-pds">'</span></span>,
+                    <span class="pl-s"><span class="pl-pds">'</span>email<span class="pl-pds">'</span></span>,
+                    <span class="pl-s"><span class="pl-pds">'</span>birthdate<span class="pl-pds">'</span></span>,
+                    <span class="pl-s"><span class="pl-pds">'</span>gender<span class="pl-pds">'</span></span>,
+                    <span class="pl-s"><span class="pl-pds">'</span>__actions<span class="pl-pds">'</span></span>
+                ],
+                itemActions<span class="pl-k">:</span> [
+                    { name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>view-item<span class="pl-pds">'</span></span>, label<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>, icon<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>zoom icon<span class="pl-pds">'</span></span>, class<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>ui teal button<span class="pl-pds">'</span></span> },
+                    { name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>edit-item<span class="pl-pds">'</span></span>, label<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>, icon<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>edit icon<span class="pl-pds">'</span></span>, class<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>ui orange button<span class="pl-pds">'</span></span>},
+                    { name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>delete-item<span class="pl-pds">'</span></span>, label<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>, icon<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>delete icon<span class="pl-pds">'</span></span>, class<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>ui red button<span class="pl-pds">'</span></span> }
+                ]
+            },
+            methods<span class="pl-k">:</span> {
+                <span class="pl-en">viewProfile</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">id</span>) {
+                    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>view profile with id:<span class="pl-pds">'</span></span>, id)
+                }
+            },
+            events<span class="pl-k">:</span> {
+                <span class="pl-s"><span class="pl-pds">'</span><span class="pl-en">vuetable:action</span><span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">action</span>, <span class="pl-smi">data</span>) {
+                    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>vuetable:action<span class="pl-pds">'</span></span>, action, data)
+                    <span class="pl-k">if</span> (action <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">'</span>view-item<span class="pl-pds">'</span></span>) {
+                        <span class="pl-v">this</span>.<span class="pl-en">viewProfile</span>(<span class="pl-smi">data</span>.<span class="pl-c1">id</span>)
+                    }
+                },
+                <span class="pl-s"><span class="pl-pds">'</span><span class="pl-en">vuetable:load-error</span><span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">response</span>) {
+                    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Load Error: <span class="pl-pds">'</span></span>, response)
+                }
+            }
+        })
+    <span class="pl-k">&lt;</span><span class="pl-k">/</span>script<span class="pl-k">&gt;</span></pre></div>
+
+<p>And you get this!
+<a href="https://i.imgsafe.org/af08442.jpg">image</a></p>
+
+<p>Since I'm mainly using <a href="http://semantic-ui.com">Semantic UI</a> as my default CSS Framework, all the css
+styles in <code>vuetable</code> are based on Semantic UI. If you're using Twitter's <a href="http://getbootstrap.com">Bootstrap</a>
+css framework, please see <a href="https://github.com/ratiw/vue-table/wiki/Using-%60vuetable%60-with-Twitter's-Bootstrap">documentation in the Wiki pages</a>.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a id="bower" class="anchor" href="#bower" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bower</h3>
+
+<pre><code>$ bower install vuetable
+</code></pre>
+
+<h3>
+<a id="npm" class="anchor" href="#npm" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>NPM</h3>
+
+<pre><code>$ npm install vuetable
+</code></pre>
+
+<h3>
+<a id="vueify-version-for-browserify-and-webpack" class="anchor" href="#vueify-version-for-browserify-and-webpack" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Vueify version for Browserify and Webpack</h3>
+
+<p>Just <code>import</code> or <code>require</code> like so,</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">//</span>
+<span class="pl-c">// firstly, require or import vue and vue-resource</span>
+<span class="pl-c">//</span>
+<span class="pl-k">var</span> Vue <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>vue<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> VueResource <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>vue-resource<span class="pl-pds">'</span></span>);
+<span class="pl-smi">Vue</span>.<span class="pl-en">use</span>(VueResource);
+
+<span class="pl-c">//</span>
+<span class="pl-c">// secondly, require or import Vuetable and VuetablePagination component</span>
+<span class="pl-c">//</span>
+<span class="pl-k">import</span> <span class="pl-smi">Vuetable</span> <span class="pl-k">from</span> <span class="pl-s"><span class="pl-pds">'</span>vuetable/src/components/Vuetable.vue<span class="pl-pds">'</span></span>;
+<span class="pl-k">import</span> <span class="pl-smi">VuetablePagination</span> <span class="pl-k">from</span> <span class="pl-s"><span class="pl-pds">'</span>vuetable/src/components/VuetablePagination.vue<span class="pl-pds">'</span></span>;
+
+<span class="pl-c">//</span>
+<span class="pl-c">// thirdly, register components to Vue</span>
+<span class="pl-c">//</span>
+<span class="pl-smi">Vue</span>.<span class="pl-en">component</span>(<span class="pl-s"><span class="pl-pds">'</span>vuetable<span class="pl-pds">'</span></span>, Vuetable);
+<span class="pl-smi">Vue</span>.<span class="pl-en">component</span>(<span class="pl-s"><span class="pl-pds">'</span>vuetable-pagination<span class="pl-pds">'</span></span>, VuetablePagination)
+</pre></div>
+
+<p>You can combine the second and third steps into one if you like.</p>
+
+<p>You need to explicitly register the pagination components using <code>Vue.component()</code> (instead of just declaring them through the <code>components:</code> section); otherwise, the pagination component will not work or swappable or extensible. I <em>guess</em> this is because it is embedded inside <code>vuetable</code> component.</p>
+
+<h3>
+<a id="direct-include" class="anchor" href="#direct-include" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Direct include</h3>
+
+<p>Just import the <code>vue-table.js</code> after <code>vue.js</code> and <code>vue-resource.js</code> library in your page like so.</p>
+
+<div class="highlight highlight-text-html-basic"><pre><span class="pl-s1">    &lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>js/vue.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;</span>
+<span class="pl-s1">    &lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>js/vue-resource.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;</span>
+<span class="pl-s1">    &lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>js/vue-table.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;</span></pre></div>
+
+<p>Then, reference the vuetable via <code>&lt;vuetable&gt;</code> tag as following</p>
+
+<div class="highlight highlight-text-html-basic"><pre>    &lt;<span class="pl-ent">div</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>app<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">vuetable</span>
+            <span class="pl-e">api-url</span>=<span class="pl-s"><span class="pl-pds">"</span>/api/users<span class="pl-pds">"</span></span>
+            :<span class="pl-e">fields</span>=<span class="pl-s"><span class="pl-pds">"</span>columns<span class="pl-pds">"</span></span>
+        &gt;&lt;/<span class="pl-ent">vuetable</span>&gt;
+    &lt;/<span class="pl-ent">div</span>&gt;
+
+<span class="pl-s1">    &lt;<span class="pl-ent">script</span>&gt;</span>
+<span class="pl-s1">        <span class="pl-k">new</span> <span class="pl-en">Vue</span>({</span>
+<span class="pl-s1">            el<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>#app<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">            columns<span class="pl-k">:</span> [</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>firstname<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>lastname<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>nickname<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>birthdate<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>group.name_en<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>gender<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>last_login<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>__actions<span class="pl-pds">'</span></span></span>
+<span class="pl-s1">            ]</span>
+<span class="pl-s1">        })</span>
+<span class="pl-s1">    &lt;/<span class="pl-ent">script</span>&gt;</span></pre></div>
+
+<ul>
+<li>
+<code>api-url</code> is the url of the api that <code>vuetable</code> should request data from.
+The returned data must be in the form of JSON formatted with at least the number of fields
+defined in <code>fields</code> property.</li>
+<li>
+<code>fields</code> is the fields mapping that will be used to display data in the table.
+You can provide only the name of the fields to be used. But if you would like to get
+the true power of <code>vuetable</code>, you must provide some more information.
+Please see <a href="https://github.com/ratiw/vue-table/wiki/Fields-Definition">Field Definition</a>
+section for more detail.</li>
+</ul>
+
+<p>For more detail, please see <a href="https://github.com/ratiw/vue-table/wiki">documentation in the Wiki pages</a>.</p>
+
+<p><a id="browser_compat"></a></p>
+
+<h2>
+<a id="browser-compatability" class="anchor" href="#browser-compatability" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Browser Compatability</h2>
+
+<p>As I use <strong>Chrome</strong> almost exclusively, it is gaurantee to work on this browser and it SHOULD also work for other <strong>WebKit</strong> based browsers as well. But I can't really gaurantee that since I don't use them regularly. </p>
+
+<p>However, <code>vuetable</code> will NOT WORK on <strong>Internet Explorer</strong> (even IE11) due to the use of <code>&lt;template&gt;</code> tag inside <code>&lt;table&gt;</code> according to <a href="https://github.com/ratiw/vue-table/issues/25#issuecomment-220920656">this</a>. In order to make it work with CSS framework table styling, I have to preserve the use of <code>&lt;table&gt;</code> and <code>&lt;template&gt;</code> tag inside it.</p>
+
+<p>It seems to work just fine in <strong>Microsoft Edge</strong> though. Anyway, if you find that it does not work on any other browser, you can let me know by posting in the <a href="https://github.com/ratiw/vue-table/issues">Issues</a>. Or if you are able to make it work on those browser, please let me know or create a pull request.</p>
+
+<p><a id="contribute"></a></p>
+
+<h2>
+<a id="contributions" class="anchor" href="#contributions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributions</h2>
+
+<p>Any contribution to the code (via pull request would be nice) or any part of the documentation (the Wiki always need some love and care) and any idea and/or suggestion are very welcome.</p>
+
+<p>However, please do not feel bad if your pull requests or contributions do not get merged or implemented into <code>vuetable</code>. </p>
+
+<p>Your contributions can, not only help make <code>vuetable</code> better, but also push it away from what I intend to use it for. I just hope that you find it useful for your use or learn something useful from its source code. But remember, you can always fork it to make it work the way you want.</p>
+
+<p><a id="license"></a></p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p><code>vuetable</code> is open-sourced software licensed under the <a href="http://opensource.org/licenses/MIT">MIT license</a>.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/ratiw/vue-table">vuetable - data table simplify!</a> is maintained by <a href="https://github.com/ratiw">ratiw</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
