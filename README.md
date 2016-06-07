@@ -192,9 +192,50 @@ section for more detail.
 
 For more detail, please see [documentation in the Wiki pages](https://github.com/ratiw/vue-table/wiki).
 
+### Building
+
+Run `npm install`
+
+Then make sure, you have installed browserify:
+
+```
+# npm install browserify -g
+```
+
+You might need root access for running the above command.
+
+Then you can simply run the build script included in the root folder:
+
+```
+$ ./build.sh
+```
+
+This will compile the vue components in the `src` directory to one file in the `dist` folder.
+
+You might want to get a minified version, in this case run this:
+
+```
+$ ./build.sh production
+```
+
+For developement it's useful when it's not needed to recompile manually each time you make a change. If you want this convenience first install watchify globally:
+
+```
+# npm install watchify -g
+```
+
+then run
+
+```
+$ ./build.sh watch
+```
+
+Now each time you make a change, the source will be recompiled automatically.
+
+
 <a id="browser_compat"></a>
 ## Browser Compatability
-As I use **Chrome** almost exclusively, it is gaurantee to work on this browser and it SHOULD also work for other **WebKit** based browsers as well. But I can't really gaurantee that since I don't use them regularly. 
+As I use **Chrome** almost exclusively, it is gaurantee to work on this browser and it SHOULD also work for other **WebKit** based browsers as well. But I can't really gaurantee that since I don't use them regularly.
 
 However, `vuetable` will NOT WORK on **Internet Explorer** (even IE11) due to the use of `<template>` tag inside `<table>` according to [this](https://github.com/ratiw/vue-table/issues/25#issuecomment-220920656). In order to make it work with CSS framework table styling, I have to preserve the use of `<table>` and `<template>` tag inside it.
 
@@ -204,7 +245,7 @@ It seems to work just fine in **Microsoft Edge** though. Anyway, if you find tha
 ## Contributions
 Any contribution to the code (via pull request would be nice) or any part of the documentation (the Wiki always need some love and care) and any idea and/or suggestion are very welcome.
 
-However, please do not feel bad if your pull requests or contributions do not get merged or implemented into `vuetable`. 
+However, please do not feel bad if your pull requests or contributions do not get merged or implemented into `vuetable`.
 
 Your contributions can, not only help make `vuetable` better, but also push it away from what I intend to use it for. I just hope that you find it useful for your use or learn something useful from its source code. But remember, you can always fork it to make it work the way you want.
 
