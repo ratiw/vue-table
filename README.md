@@ -192,6 +192,47 @@ section for more detail.
 
 For more detail, please see [documentation in the Wiki pages](https://github.com/ratiw/vue-table/wiki).
 
+### Building
+
+Run `npm install`
+
+Then make sure, you have installed browserify:
+
+```
+# npm install browserify -g
+```
+
+You might need root access for running the above command.
+
+Then you can simply run the build script included in the root folder:
+
+```
+$ ./build.sh
+```
+
+This will compile the vue components in the `src` directory to one file in the `dist` folder.
+
+You might want to get a minified version, in this case run this:
+
+```
+$ ./build.sh production
+```
+
+For developement it's useful when it's not needed to recompile manually each time you make a change. If you want this convenience first install watchify globally:
+
+```
+# npm install watchify -g
+```
+
+then run
+
+```
+$ ./build.sh watch
+```
+
+Now each time you make a change, the source will be recompiled automatically.
+
+
 
 <a id="license"></a>
 ## License
