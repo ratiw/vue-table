@@ -18,7 +18,7 @@
                                     id="_{{field.name}}"
                                     class="{{field.titleClass || ''}} {{isSortable(field) ? 'sortable' : ''}}">
                                     {{getTitle(field) | capitalize}}&nbsp;
-                                    <i v-if="isCurrentSortField(field)" class="{{ sortIcon }}"></i>
+                                    <i v-if="isCurrentSortField(field)" class="{{ sortIcon(field) }}"></i>
                                 </th>
                             </template>
                         </template>
@@ -120,12 +120,21 @@ export default {
             required: true
         },
         'sortOrder': {
-            type: Object,
+            type: Array,
             default: function() {
-                return {
-                    field: '',
-                    direction: 'asc'
-                }
+                return [];
+                /* array of 
+                    {
+                        field: '',
+                        direction: 'asc'
+                    }
+                objects */
+            }
+        },
+        'multiSort' : {
+            type: Boolean,
+            default: function() {
+                return false
             }
         },
         'perPage': {
@@ -263,9 +272,6 @@ export default {
         },
     },
     computed: {
-        sortIcon: function() {
-            return this.sortOrder.direction == 'asc' ? this.ascendingIcon : this.descendingIcon
-        },
         paginationInfo: function() {
             if (this.tablePagination == null || this.tablePagination.total == 0) {
                 return this.paginationInfoNoDataTemplate
@@ -377,11 +383,17 @@ export default {
                 return ''
             }
 
-            var fieldName = (typeof this.sortOrder.sortField === 'undefined')
-                ? this.sortOrder.field
-                : this.sortOrder.sortField
+            var result = '';
 
-            return fieldName +'|' + this.sortOrder.direction
+            for(var i=0; i<this.sortOrder.length; i++){
+                var fieldName = (typeof this.sortOrder[i].sortField === 'undefined')
+                    ? this.sortOrder[i].field
+                    : this.sortOrder[i].sortField;
+
+                result += fieldName +'|' + this.sortOrder[i].direction + ((i+1)<this.sortOrder.length ? ',' : '');
+            }
+
+            return result;
         },
         addClass: function(el, className) {
             if (el.classList)
@@ -406,15 +418,42 @@ export default {
                 return
             }
 
-            if (this.sortOrder.field == field.name) {
-                // change sort direction
-                this.sortOrder.direction = this.sortOrder.direction == 'asc' ? 'desc' : 'asc'
+            if (this.multiSort){
+                var i = this.currentSortOrder(field);
+
+                if(i === false){ //this field is not in the sort array yet
+                    this.sortOrder.push({
+                        field: field.name,
+                        direction: 'asc'
+                    });
+                } else { //this field is in the sort array, now we change its state
+                    if(this.sortOrder[i].direction == 'asc'){
+                        // switch direction
+                        this.sortOrder[i].direction = 'desc'
+                    } else {
+                        //remove sort condition
+                        this.sortOrder.splice(i, 1);
+                    }
+                }
             } else {
-                // reset sort direction
-                this.sortOrder.direction = 'asc'
+                if (this.sortOrder.length == 0){
+                    this.sortOrder.push({
+                        field: '',
+                        direction: 'asc'
+                    });
+                }
+                if (this.sortOrder[0].field == field.name) {
+                    // change sort direction
+                    this.sortOrder[0].direction = this.sortOrder[0].direction == 'asc' ? 'desc' : 'asc'
+                } else {
+                    // reset sort direction
+                    this.sortOrder[0].direction = 'asc'
+                }
+                this.sortOrder[0].field = field.name
+                this.sortOrder[0].sortField = field.sortField
             }
-            this.sortOrder.field = field.name
-            this.sortOrder.sortField = field.sortField
+
+            
             this.currentPage = 1    // reset page index
             this.loadData()
         },
@@ -422,11 +461,30 @@ export default {
             return !(typeof field.sortField == 'undefined')
         },
         isCurrentSortField: function(field) {
+            return this.currentSortOrder(field) !== false;
+        },
+        currentSortOrder: function(field){
             if (!this.isSortable(field)) {
                 return false
             }
 
-            return this.sortOrder.field == field.name
+            for(var i = 0; i<this.sortOrder.length; i++){
+                if(this.sortOrder[i].field == field.name){
+                    return i;
+                }
+            }
+
+            return false;
+        },
+        sortIcon: function(field) {
+            var i = this.currentSortOrder(field);
+            if (i !== false){
+                return this.sortOrder[i].direction == 'asc' ?
+                    this.ascendingIcon :
+                    this.descendingIcon;
+            } else {
+                return '';
+            }  
         },
         gotoPreviousPage: function() {
             if (this.currentPage > 1) {
@@ -543,6 +601,14 @@ export default {
                 this.$parent[this.paginationConfig].call(this.$parent, this.$refs.pagination.$options.name)
             }
         },
+    },
+    watch: {
+        'multiSort': function(newVal, oldVal){
+            if (newVal === false && this.sortOrder.length > 1) {
+                this.sortOrder.splice(1);
+                this.loadData();
+            }
+        }
     },
     events: {
         'vuetable-pagination:change-page': function(page) {

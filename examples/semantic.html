@@ -143,6 +143,7 @@
                 table-wrapper=".vuetable-wrapper"
                 :fields="fields"
                 :sort-order="sortOrder"
+                :multi-sort="multiSort"
                 :item-actions="itemActions"
                 :per-page="perPage"
                 :append-params="moreParams"
@@ -203,10 +204,11 @@
             searchFor: '',
             moreParams: [],
             fields: tableColumns,
-            sortOrder: {
+            sortOrder: [{
                 field: 'name',
                 direction: 'asc',
-            },
+            }],
+            multiSort: false,
             paginationComponent: 'vuetable-pagination',
             perPage: 10,
             paginationInfoTemplate: 'แสดง {from} ถึง {to} จากทั้งหมด {total} รายการ',

@@ -184,6 +184,7 @@
                 pagination-path=""
                 :fields="fields"
                 :sort-order="sortOrder"
+                :multi-sort="multiSort"
                 table-class="table table-bordered table-striped table-hover"
                 ascending-icon="glyphicon glyphicon-chevron-up"
                 descending-icon="glyphicon glyphicon-chevron-down"
@@ -261,10 +262,11 @@
         data: {
             searchFor: '',
             fields: tableColumns,
-            sortOrder: {
+            sortOrder: [{
                 field: 'name',
                 direction: 'asc'
-            },
+            }],
+            multiSort: false,
             perPage: 10,
             paginationComponent: 'vuetable-pagination',
             paginationInfoTemplate: 'แสดง {from} ถึง {to} จากทั้งหมด {total} รายการ',
