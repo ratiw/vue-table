@@ -14,7 +14,7 @@
                                 </th>
                             </template>
                             <template v-else>
-                                <th @click="orderBy(field)"
+                                <th @click="orderBy(field, $event)"
                                     id="_{{field.name}}"
                                     class="{{field.titleClass || ''}} {{isSortable(field) ? 'sortable' : ''}}">
                                     {{getTitle(field) | capitalize}}&nbsp;
@@ -413,12 +413,12 @@ export default {
         broadcastEvent: function(eventName, args) {
             this.$broadcast(this.eventPrefix + eventName, args)
         },
-        orderBy: function(field) {
+        orderBy: function(field, event) {
             if ( ! this.isSortable(field)) {
                 return
             }
 
-            if (this.multiSort){
+            if (this.multiSort && event.ctrlKey){ //adding column to multisort
                 var i = this.currentSortOrder(field);
 
                 if(i === false){ //this field is not in the sort array yet
@@ -435,13 +435,16 @@ export default {
                         this.sortOrder.splice(i, 1);
                     }
                 }
-            } else {
+            } else { //no multisort, or resetting sort
                 if (this.sortOrder.length == 0){
                     this.sortOrder.push({
                         field: '',
                         direction: 'asc'
                     });
                 }
+
+                this.sortOrder.splice(1); //removes additional columns
+
                 if (this.sortOrder[0].field == field.name) {
                     // change sort direction
                     this.sortOrder[0].direction = this.sortOrder[0].direction == 'asc' ? 'desc' : 'asc'
