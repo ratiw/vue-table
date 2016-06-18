@@ -18,7 +18,7 @@
                                     id="_{{field.name}}"
                                     class="{{field.titleClass || ''}} {{isSortable(field) ? 'sortable' : ''}}">
                                     {{getTitle(field) | capitalize}}&nbsp;
-                                    <i v-if="isCurrentSortField(field)" class="{{ sortIcon(field) }}"></i>
+                                    <i v-if="isCurrentSortField(field)" class="{{ sortIcon(field) }}" v-bind:style="{opacity: sortIconOpacity(field)}"></i>
                                 </th>
                             </template>
                         </template>
@@ -488,6 +488,31 @@ export default {
             } else {
                 return '';
             }  
+        },
+        sortIconOpacity: function(field) {
+            //fields with stronger precedence have darker color
+
+            //if there are few fields, we go down by 0.3
+            //ex. 2 fields are selected: 1.0, 0.7
+
+            //if there are more we go down evenly on the given spectrum
+            //ex. 6 fields are selected: 1.0, 0.86, 0.72, 0.58, 0.44, 0.3 
+
+            var max = 1.0;
+            var min = 0.3;
+            var step = 0.3;
+
+            var count = this.sortOrder.length;
+            var current = this.currentSortOrder(field);
+
+
+            if(max - count*step < min){
+               step = (max - min) / (count-1);
+            }
+
+            var opacity = max - current*step;
+
+            return opacity;
         },
         gotoPreviousPage: function() {
             if (this.currentPage > 1) {
