@@ -373,12 +373,21 @@ exports.default = {
             required: true
         },
         'sortOrder': {
-            type: Object,
+            type: Array,
             default: function _default() {
-                return {
-                    field: '',
-                    direction: 'asc'
-                };
+                return [];
+                /* array of 
+                    {
+                        field: '',
+                        direction: 'asc'
+                    }
+                objects */
+            }
+        },
+        'multiSort': {
+            type: Boolean,
+            default: function _default() {
+                return false;
             }
         },
         'perPage': {
@@ -516,9 +525,6 @@ exports.default = {
         }
     },
     computed: {
-        sortIcon: function sortIcon() {
-            return this.sortOrder.direction == 'asc' ? this.ascendingIcon : this.descendingIcon;
-        },
         paginationInfo: function paginationInfo() {
             if (this.tablePagination == null || this.tablePagination.total == 0) {
                 return this.paginationInfoNoDataTemplate;
@@ -619,9 +625,15 @@ exports.default = {
                 return '';
             }
 
-            var fieldName = typeof this.sortOrder.sortField === 'undefined' ? this.sortOrder.field : this.sortOrder.sortField;
+            var result = '';
 
-            return fieldName + '|' + this.sortOrder.direction;
+            for (var i = 0; i < this.sortOrder.length; i++) {
+                var fieldName = typeof this.sortOrder[i].sortField === 'undefined' ? this.sortOrder[i].field : this.sortOrder[i].sortField;
+
+                result += fieldName + '|' + this.sortOrder[i].direction + (i + 1 < this.sortOrder.length ? ',' : '');
+            }
+
+            return result;
         },
         addClass: function addClass(el, className) {
             if (el.classList) el.classList.add(className);else el.className += ' ' + className;
@@ -635,20 +647,53 @@ exports.default = {
         broadcastEvent: function broadcastEvent(eventName, args) {
             this.$broadcast(this.eventPrefix + eventName, args);
         },
-        orderBy: function orderBy(field) {
+        orderBy: function orderBy(field, event) {
             if (!this.isSortable(field)) {
                 return;
             }
 
-            if (this.sortOrder.field == field.name) {
-                // change sort direction
-                this.sortOrder.direction = this.sortOrder.direction == 'asc' ? 'desc' : 'asc';
+            if (this.multiSort && event.ctrlKey) {
+                //adding column to multisort
+                var i = this.currentSortOrder(field);
+
+                if (i === false) {
+                    //this field is not in the sort array yet
+                    this.sortOrder.push({
+                        field: field.name,
+                        direction: 'asc'
+                    });
+                } else {
+                    //this field is in the sort array, now we change its state
+                    if (this.sortOrder[i].direction == 'asc') {
+                        // switch direction
+                        this.sortOrder[i].direction = 'desc';
+                    } else {
+                        //remove sort condition
+                        this.sortOrder.splice(i, 1);
+                    }
+                }
             } else {
-                // reset sort direction
-                this.sortOrder.direction = 'asc';
+                //no multisort, or resetting sort
+                if (this.sortOrder.length == 0) {
+                    this.sortOrder.push({
+                        field: '',
+                        direction: 'asc'
+                    });
+                }
+
+                this.sortOrder.splice(1); //removes additional columns
+
+                if (this.sortOrder[0].field == field.name) {
+                    // change sort direction
+                    this.sortOrder[0].direction = this.sortOrder[0].direction == 'asc' ? 'desc' : 'asc';
+                } else {
+                    // reset sort direction
+                    this.sortOrder[0].direction = 'asc';
+                }
+                this.sortOrder[0].field = field.name;
+                this.sortOrder[0].sortField = field.sortField;
             }
-            this.sortOrder.field = field.name;
-            this.sortOrder.sortField = field.sortField;
+
             this.currentPage = 1; // reset page index
             this.loadData();
         },
@@ -656,11 +701,52 @@ exports.default = {
             return !(typeof field.sortField == 'undefined');
         },
         isCurrentSortField: function isCurrentSortField(field) {
+            return this.currentSortOrder(field) !== false;
+        },
+        currentSortOrder: function currentSortOrder(field) {
             if (!this.isSortable(field)) {
                 return false;
             }
 
-            return this.sortOrder.field == field.name;
+            for (var i = 0; i < this.sortOrder.length; i++) {
+                if (this.sortOrder[i].field == field.name) {
+                    return i;
+                }
+            }
+
+            return false;
+        },
+        sortIcon: function sortIcon(field) {
+            var i = this.currentSortOrder(field);
+            if (i !== false) {
+                return this.sortOrder[i].direction == 'asc' ? this.ascendingIcon : this.descendingIcon;
+            } else {
+                return '';
+            }
+        },
+        sortIconOpacity: function sortIconOpacity(field) {
+            //fields with stronger precedence have darker color
+
+            //if there are few fields, we go down by 0.3
+            //ex. 2 fields are selected: 1.0, 0.7
+
+            //if there are more we go down evenly on the given spectrum
+            //ex. 6 fields are selected: 1.0, 0.86, 0.72, 0.58, 0.44, 0.3
+
+            var max = 1.0;
+            var min = 0.3;
+            var step = 0.3;
+
+            var count = this.sortOrder.length;
+            var current = this.currentSortOrder(field);
+
+            if (max - count * step < min) {
+                step = (max - min) / (count - 1);
+            }
+
+            var opacity = max - current * step;
+
+            return opacity;
         },
         gotoPreviousPage: function gotoPreviousPage() {
             if (this.currentPage > 1) {
@@ -775,6 +861,14 @@ exports.default = {
             }
         }
     },
+    watch: {
+        'multiSort': function multiSort(newVal, oldVal) {
+            if (newVal === false && this.sortOrder.length > 1) {
+                this.sortOrder.splice(1);
+                this.loadData();
+            }
+        }
+    },
     events: {
         'vuetable-pagination:change-page': function vuetablePaginationChangePage(page) {
             if (page == 'prev') {
@@ -812,7 +906,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"{{wrapperClass}}\">\n    <table class=\"vuetable {{tableClass}}\">\n        <thead>\n            <tr>\n                <template v-for=\"field in fields\">\n                    <template v-if=\"field.visible\">\n                        <template v-if=\"isSpecialField(field.name)\">\n                            <th v-if=\"extractName(field.name) == '__checkbox'\" class=\"{{field.titleClass || ''}}\">\n                                <input type=\"checkbox\" @change=\"toggleAllCheckboxes($event.target.checked, field.name)\">\n                            </th>\n                            <th v-else=\"\" id=\"{{field.name}}\" class=\"{{field.titleClass || ''}}\">\n                                {{field.title || ''}}\n                            </th>\n                        </template>\n                        <template v-else=\"\">\n                            <th @click=\"orderBy(field)\" id=\"_{{field.name}}\" class=\"{{field.titleClass || ''}} {{isSortable(field) ? 'sortable' : ''}}\">\n                                {{getTitle(field) | capitalize}}&nbsp;\n                                <i v-if=\"isCurrentSortField(field)\" class=\"{{ sortIcon }}\"></i>\n                            </th>\n                        </template>\n                    </template>\n                </template>\n            </tr>\n        </thead>\n        <tbody v-cloak=\"\">\n            <tr v-for=\"(itemNumber, item) in tableData\" @click=\"onRowClicked(item, $event)\">\n                <template v-if=\"onRowChanged(item)\"></template>\n                <template v-for=\"field in fields\">\n                    <template v-if=\"field.visible\">\n                        <template v-if=\"isSpecialField(field.name)\">\n                            <td v-if=\"extractName(field.name) == '__sequence'\" class=\"vuetable-sequence {{field.dataClass}}\" v-html=\"tablePagination.from + itemNumber\">\n                            </td>\n                            <td v-if=\"extractName(field.name) == '__checkbox'\" class=\"vuetable-checkboxes {{field.dataClass}}\">\n                                <input type=\"checkbox\" @change=\"toggleCheckbox($event.target.checked, item, field.name)\" :checked=\"isSelectedRow(item, field.name)\">\n                            </td>\n                            <td v-if=\"field.name == '__actions'\" class=\"vuetable-actions {{field.dataClass}}\">\n                                <template v-for=\"action in itemActions\">\n                                    <button class=\"{{ action.class }}\" @click=\"callAction(action.name, item)\" v-attr=\"action.extra\">\n                                        <i class=\"{{ action.icon }}\"></i> {{ action.label }}\n                                    </button>\n                                </template>\n                            </td>\n                        </template>\n                        <template v-else=\"\">\n                            <td v-if=\"hasCallback(field)\" class=\"{{field.dataClass}}\" @dblclick=\"onCellDoubleClicked(item, field, $event)\">\n                                {{{ callCallback(field, item) }}}\n                            </td>\n                            <td v-else=\"\" class=\"{{field.dataClass}}\" @dblclick=\"onCellDoubleClicked(item, field, $event)\">\n                                {{{ getObjectValue(item, field.name, \"\") }}}\n                            </td>\n                        </template>\n                    </template>\n                </template>\n            </tr>\n        </tbody>\n    </table>\n    <div v-if=\"showPagination\" class=\"vuetable-pagination {{paginationClass}}\">\n        <div class=\"vuetable-pagination-info {{paginationInfoClass}}\" v-html=\"paginationInfo\">\n        </div>\n        <div v-show=\"tablePagination &amp;&amp; tablePagination.last_page > 1\" class=\"vuetable-pagination-component {{paginationComponentClass}}\">\n            <component v-ref:pagination=\"\" :is=\"paginationComponent\"></component>\n        </div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"{{wrapperClass}}\">\n    <table class=\"vuetable {{tableClass}}\">\n        <thead>\n            <tr>\n                <template v-for=\"field in fields\">\n                    <template v-if=\"field.visible\">\n                        <template v-if=\"isSpecialField(field.name)\">\n                            <th v-if=\"extractName(field.name) == '__checkbox'\" class=\"{{field.titleClass || ''}}\">\n                                <input type=\"checkbox\" @change=\"toggleAllCheckboxes($event.target.checked, field.name)\">\n                            </th>\n                            <th v-else=\"\" id=\"{{field.name}}\" class=\"{{field.titleClass || ''}}\">\n                                {{field.title || ''}}\n                            </th>\n                        </template>\n                        <template v-else=\"\">\n                            <th @click=\"orderBy(field, $event)\" id=\"_{{field.name}}\" class=\"{{field.titleClass || ''}} {{isSortable(field) ? 'sortable' : ''}}\">\n                                {{getTitle(field) | capitalize}}&nbsp;\n                                <i v-if=\"isCurrentSortField(field)\" class=\"{{ sortIcon(field) }}\" v-bind:style=\"{opacity: sortIconOpacity(field)}\"></i>\n                            </th>\n                        </template>\n                    </template>\n                </template>\n            </tr>\n        </thead>\n        <tbody v-cloak=\"\">\n            <tr v-for=\"(itemNumber, item) in tableData\" @click=\"onRowClicked(item, $event)\">\n                <template v-if=\"onRowChanged(item)\"></template>\n                <template v-for=\"field in fields\">\n                    <template v-if=\"field.visible\">\n                        <template v-if=\"isSpecialField(field.name)\">\n                            <td v-if=\"extractName(field.name) == '__sequence'\" class=\"vuetable-sequence {{field.dataClass}}\" v-html=\"tablePagination.from + itemNumber\">\n                            </td>\n                            <td v-if=\"extractName(field.name) == '__checkbox'\" class=\"vuetable-checkboxes {{field.dataClass}}\">\n                                <input type=\"checkbox\" @change=\"toggleCheckbox($event.target.checked, item, field.name)\" :checked=\"isSelectedRow(item, field.name)\">\n                            </td>\n                            <td v-if=\"field.name == '__actions'\" class=\"vuetable-actions {{field.dataClass}}\">\n                                <template v-for=\"action in itemActions\">\n                                    <button class=\"{{ action.class }}\" @click=\"callAction(action.name, item)\" v-attr=\"action.extra\">\n                                        <i class=\"{{ action.icon }}\"></i> {{ action.label }}\n                                    </button>\n                                </template>\n                            </td>\n                        </template>\n                        <template v-else=\"\">\n                            <td v-if=\"hasCallback(field)\" class=\"{{field.dataClass}}\" @dblclick=\"onCellDoubleClicked(item, field, $event)\">\n                                {{{ callCallback(field, item) }}}\n                            </td>\n                            <td v-else=\"\" class=\"{{field.dataClass}}\" @dblclick=\"onCellDoubleClicked(item, field, $event)\">\n                                {{{ getObjectValue(item, field.name, \"\") }}}\n                            </td>\n                        </template>\n                    </template>\n                </template>\n            </tr>\n        </tbody>\n    </table>\n    <div v-if=\"showPagination\" class=\"vuetable-pagination {{paginationClass}}\">\n        <div class=\"vuetable-pagination-info {{paginationInfoClass}}\" v-html=\"paginationInfo\">\n        </div>\n        <div v-show=\"tablePagination &amp;&amp; tablePagination.last_page > 1\" class=\"vuetable-pagination-component {{paginationComponentClass}}\">\n            <component v-ref:pagination=\"\" :is=\"paginationComponent\"></component>\n        </div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
