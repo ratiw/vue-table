@@ -140,11 +140,20 @@ export default {
                 objects */
             }
         },
-        'multiSort' : {
+        multiSort: {
             type: Boolean,
             default: function() {
                 return false
             }
+        },
+        /*
+         * physical key that will trigger multi-sort option
+         * possible values: 'alt', 'ctrl', 'meta', 'shift'
+         * 'ctrl' might not work as expected on Mac
+         */
+        multiSortKey: {
+            type: String,
+            default: 'alt'
         },
         perPage: {
             type: Number,
@@ -456,7 +465,9 @@ export default {
                 return
             }
 
-            if (this.multiSort && event.ctrlKey){ //adding column to multisort
+            var key = this.multiSortKey + 'Key'
+
+            if (this.multiSort && event[key]){ //adding column to multisort
                 var i = this.currentSortOrder(field);
 
                 if(i === false){ //this field is not in the sort array yet

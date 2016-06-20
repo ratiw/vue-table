@@ -384,11 +384,20 @@ exports.default = {
                 objects */
             }
         },
-        'multiSort': {
+        multiSort: {
             type: Boolean,
             default: function _default() {
                 return false;
             }
+        },
+        /*
+         * physical key that will trigger multi-sort option
+         * possible values: 'alt', 'ctrl', 'meta', 'shift'
+         * 'ctrl' might not work as expected on Mac
+         */
+        multiSortKey: {
+            type: String,
+            default: 'alt'
         },
         perPage: {
             type: Number,
@@ -681,7 +690,9 @@ exports.default = {
                 return;
             }
 
-            if (this.multiSort && event.ctrlKey) {
+            var key = this.multiSortKey + 'Key';
+
+            if (this.multiSort && event[key]) {
                 //adding column to multisort
                 var i = this.currentSortOrder(field);
 
@@ -995,9 +1006,9 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-5a6777d9", module.exports)
+    hotAPI.createRecord("_v-a86009c0", module.exports)
   } else {
-    hotAPI.update("_v-5a6777d9", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-a86009c0", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":"vue","vue-hot-reload-api":1,"vueify/lib/insert-css":2}],4:[function(require,module,exports){
@@ -1023,9 +1034,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-4ead4153", module.exports)
+    hotAPI.createRecord("_v-50fb97da", module.exports)
   } else {
-    hotAPI.update("_v-4ead4153", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-50fb97da", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./VuetablePaginationMixin.vue":6,"vue":"vue","vue-hot-reload-api":1}],5:[function(require,module,exports){
@@ -1091,9 +1102,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-13f47e04", module.exports)
+    hotAPI.createRecord("_v-15a35d8b", module.exports)
   } else {
-    hotAPI.update("_v-13f47e04", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-15a35d8b", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./VuetablePaginationMixin.vue":6,"vue":"vue","vue-hot-reload-api":1}],6:[function(require,module,exports){
@@ -1211,9 +1222,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-b0cab6c4", module.exports)
+    hotAPI.createRecord("_v-e59f6b12", module.exports)
   } else {
-    hotAPI.update("_v-b0cab6c4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-e59f6b12", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":"vue","vue-hot-reload-api":1}],7:[function(require,module,exports){
