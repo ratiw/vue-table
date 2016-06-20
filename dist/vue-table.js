@@ -690,7 +690,7 @@ exports.default = {
                 return;
             }
 
-            var key = this.multiSortKey + 'Key';
+            var key = this.multiSortKey.toLowerCase() + 'Key';
 
             if (this.multiSort && event[key]) {
                 //adding column to multisort
