@@ -20,6 +20,7 @@
         body {
           padding-top: 50px;
           padding-bottom: 20px;
+          overflow-y: scroll;
         }
         ul.dropdown-menu li {
             margin-left: 20px;
@@ -62,6 +63,19 @@
         }
         .highlight {
             background-color: yellow;
+        }
+        .vuetable-detail-row {
+            height: 200px;
+        }
+        .detail-row {
+            margin-left: 40px;
+        }
+        .expand-transition {
+            transition: all .5s ease;
+        }
+        .expand-enter, .expand-leave {
+            height: 0;
+            opacity: 0;
         }
 
         /* Loading Animation: */
@@ -198,6 +212,10 @@
                 wrapper-class="vuetable-wrapper"
                 table-wrapper=".vuetable-wrapper"
                 loading-class="loading"
+                detail-row="makeDetailRow"
+                detail-row-id="id"
+                detail-row-transition="expand"
+                row-class-callback="rowClassCB"
             ></vuetable>
         </div>
         <hr>
@@ -224,6 +242,12 @@
 
     // fields definition
     var tableColumns = [
+        {
+            name: 'id',
+            title: '',
+            dataClass: 'text-center',
+            callback: 'showDetailRow'
+        },
         {
             name: 'name',
             sortField: 'name',
@@ -266,7 +290,7 @@
                 field: 'name',
                 direction: 'asc'
             }],
-            multiSort: false,
+            multiSort: true,
             perPage: 10,
             paginationComponent: 'vuetable-pagination',
             paginationInfoTemplate: 'แสดง {from} ถึง {to} จากทั้งหมด {total} รายการ',
@@ -302,6 +326,14 @@
                 if (value == null) return ''
                 fmt = (typeof fmt == 'undefined') ? 'D MMM YYYY' : fmt
                 return moment(value, 'YYYY-MM-DD').format(fmt)
+            },
+            showDetailRow: function(value) {
+                var icon = this.$refs.vuetable.isVisibleDetailRow(value) ? 'glyphicon glyphicon-minus-sign' : 'glyphicon glyphicon-plus-sign'
+                return [
+                    '<a class="show-detail-row">',
+                        '<i class="' + icon + '"></i>',
+                    '</a>'
+                ].join('')
             },
             /**
              * Other functions
@@ -339,6 +371,37 @@
                     '<span class="highlight">$1</span>'
                 )
             },
+            makeDetailRow: function(data) {
+                return [
+                    '<td colspan="7">',
+                        '<div class="detail-row">',
+                            '<div class="form-group">',
+                                '<label>Name: </label>',
+                                '<span>' + data.name + '</span>',
+                            '</div>',
+                            '<div class="form-group">',
+                                '<label>Email: </label>',
+                                '<span>' + data.email + '</span>',
+                            '</div>',
+                            '<div class="form-group">',
+                                '<label>Nickname: </label>',
+                                '<span>' + data.nickname + '</span>',
+                            '</div>',
+                            '<div class="form-group">',
+                                '<label>Birthdate: </label>',
+                                '<span>' + data.birthdate + '</span>',
+                            '</div>',
+                            '<div class="form-group">',
+                                '<label>Gender: </label>',
+                                '<span>' + data.gender + '</span>',
+                            '</div>',
+                        '</div>',
+                    '</td>'
+                ].join('')
+            },
+            rowClassCB: function(data, index) {
+                return (index % 2) === 0 ? 'positive' : ''
+            },
             paginationConfig: function(componentName) {
                 console.log('paginationConfig: ', componentName)
                 if (componentName == 'vuetable-pagination') {
@@ -365,8 +428,7 @@
             },
             'vuetable:row-clicked': function(data, event) {
                 console.log('clicked:', data.name)
-                data.name = '! '+data.name
-                data.nickname = '<i>'+data.nickname+'</i>'
+                this.$broadcast('vuetable:toggle-detail', data.id)
             },
             'vuetable:action': function(action, data) {
                 console.log('vuetable:action', action, data)

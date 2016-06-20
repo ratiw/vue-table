@@ -26,38 +26,47 @@
                 </tr>
             </thead>
             <tbody v-cloak>
-                <tr v-for="(itemNumber, item) in tableData" @click="onRowClicked(item, $event)">
-                    <template v-if="onRowChanged(item)"></template>
-                    <template v-for="field in fields">
-                        <template v-if="field.visible">
-                            <template v-if="isSpecialField(field.name)">
-                                <td v-if="extractName(field.name) == '__sequence'" class="vuetable-sequence {{field.dataClass}}"
-                                    v-html="tablePagination.from + itemNumber">
-                                </td>
-                                <td v-if="extractName(field.name) == '__checkbox'" class="vuetable-checkboxes {{field.dataClass}}">
-                                    <input type="checkbox"
-                                        @change="toggleCheckbox($event.target.checked, item, field.name)"
-                                        :checked="isSelectedRow(item, field.name)">
-                                </td>
-                                <td v-if="field.name == '__actions'" class="vuetable-actions {{field.dataClass}}">
-                                    <template v-for="action in itemActions">
-                                        <button class="{{ action.class }}" @click="callAction(action.name, item)" v-attr="action.extra">
-                                            <i class="{{ action.icon }}"></i> {{ action.label }}
-                                        </button>
-                                    </template>
-                                </td>
-                            </template>
-                            <template v-else>
-                                <td v-if="hasCallback(field)" class="{{field.dataClass}}" @dblclick="onCellDoubleClicked(item, field, $event)">
-                                    {{{ callCallback(field, item) }}}
-                                </td>
-                                <td v-else class="{{field.dataClass}}" @dblclick="onCellDoubleClicked(item, field, $event)">
-                                    {{{ getObjectValue(item, field.name, "") }}}
-                                </td>
+                <template v-for="(itemNumber, item) in tableData">
+                    <tr @click="onRowClicked(item, $event)" :render="onRowChanged(item)" :render="onRowChanged(item)" :class="onRowClass(item, itemNumber)">
+                        <template v-for="field in fields">
+                            <template v-if="field.visible">
+                                <template v-if="isSpecialField(field.name)">
+                                    <td v-if="extractName(field.name) == '__sequence'" class="vuetable-sequence {{field.dataClass}}"
+                                        v-html="tablePagination.from + itemNumber">
+                                    </td>
+                                    <td v-if="extractName(field.name) == '__checkbox'" class="vuetable-checkboxes {{field.dataClass}}">
+                                        <input type="checkbox"
+                                            @change="toggleCheckbox($event.target.checked, item, field.name)"
+                                            :checked="isSelectedRow(item, field.name)">
+                                    </td>
+                                    <td v-if="field.name == '__actions'" class="vuetable-actions {{field.dataClass}}">
+                                        <template v-for="action in itemActions">
+                                            <button class="{{ action.class }}" @click="callAction(action.name, item)" v-attr="action.extra">
+                                                <i class="{{ action.icon }}"></i> {{ action.label }}
+                                            </button>
+                                        </template>
+                                    </td>
+                                </template>
+                                <template v-else>
+                                    <td v-if="hasCallback(field)" class="{{field.dataClass}}" @dblclick="onCellDoubleClicked(item, field, $event)">
+                                        {{{ callCallback(field, item) }}}
+                                    </td>
+                                    <td v-else class="{{field.dataClass}}" @dblclick="onCellDoubleClicked(item, field, $event)">
+                                        {{{ getObjectValue(item, field.name, "") }}}
+                                    </td>
+                                </template>
                             </template>
                         </template>
+                    </tr>
+                    <template v-if="useDetailRow">
+                        <tr v-if="isVisibleDetailRow(item[detailRowId])"
+                            v-html="detailRowCallback(item)"
+                            @click="onDetailRowClick(item, $event)"
+                            :transition="detailRowTransition"
+                            class="{{detailRowClass}}"
+                        ></tr>
                     </template>
-                </tr>
+                </template>
             </tbody>
         </table>
         <div v-if="showPagination" class="vuetable-pagination {{paginationClass}}">
@@ -75,55 +84,55 @@
 <script>
 export default {
     props: {
-        'wrapperClass': {
+        wrapperClass: {
             type: String,
             default: function() {
                 return null
             }
         },
-        'tableWrapper': {
+        tableWrapper: {
             type: String,
             default: function() {
                 return null
             }
         },
-        'tableClass': {
+        tableClass: {
             type: String,
             default: function() {
                 return 'ui blue striped selectable celled stackable attached table'
             }
         },
-        'loadingClass': {
+        loadingClass: {
             type: String,
             default: function() {
                 return 'loading'
             }
         },
-        'dataPath': {
+        dataPath: {
             type: String,
             default: function() {
                 return 'data'
             }
         },
-        'paginationPath': {
+        paginationPath: {
             type: String,
             default: function() {
                 return 'links.pagination'
             }
         },
-        'fields': {
+        fields: {
             type: Array,
             required: true
         },
-        'apiUrl': {
+        apiUrl: {
             type: String,
             required: true
         },
-        'sortOrder': {
+        sortOrder: {
             type: Array,
             default: function() {
                 return [];
-                /* array of 
+                /* array of
                     {
                         field: '',
                         direction: 'asc'
@@ -137,7 +146,7 @@ export default {
                 return false
             }
         },
-        'perPage': {
+        perPage: {
             type: Number,
             coerce: function(val) {
                 return parseInt(val)
@@ -146,67 +155,67 @@ export default {
                 return 10
             }
         },
-        'ascendingIcon': {
+        ascendingIcon: {
             type: String,
             default: function() {
                 return 'blue chevron up icon'
             }
         },
-        'descendingIcon': {
+        descendingIcon: {
             type: String,
             default: function() {
                 return 'blue chevron down icon'
             }
         },
-        'appendParams': {
+        appendParams: {
             type: Array,
             default: function() {
                 return []
             }
         },
-        'showPagination': {
+        showPagination: {
             type: Boolean,
             default: function() {
                 return true
             }
         },
-        'paginationComponent': {
+        paginationComponent: {
             type: String,
             default: function() {
                 return 'vuetable-pagination'
             }
         },
-        'paginationInfoTemplate': {
+        paginationInfoTemplate: {
             type: String,
             default: function() {
                 return "Displaying {from} to {to} of {total} items"
             }
         },
-        'paginationInfoNoDataTemplate': {
+        paginationInfoNoDataTemplate: {
             type: String,
             default: function() {
                 return 'No relevant data'
             }
         },
-        'paginationClass': {
+        paginationClass: {
             type: String,
             default: function() {
                 return 'ui bottom attached segment grid'
             }
         },
-        'paginationInfoClass': {
+        paginationInfoClass: {
             type: String,
             default: function() {
                 return 'left floated left aligned six wide column'
             }
         },
-        'paginationComponentClass': {
+        paginationComponentClass: {
             type: String,
             default: function() {
                 return 'right floated right aligned six wide column'
             }
         },
-        'paginationConfig': {
+        paginationConfig: {
             type: String,
             default: function() {
                 return 'paginationConfig'
@@ -252,14 +261,35 @@ export default {
                 return {}
             }
         },
+        detailRow: {
+            type: String,
+            default: ''
+        },
+        detailRowId: {
+            type: String,
+            default: 'id'
+        },
+        detailRowTransition: {
+            type: String,
+            default: ''
+        },
+        detailRowClass: {
+            type: String,
+            default: 'vuetable-detail-row'
+        },
+        rowClassCallback: {
+            type: String,
+            default: ''
+        }
     },
     data: function() {
         return {
-            version: '1.1.1',
+            version: '1.1.3',
             eventPrefix: 'vuetable:',
             tableData: null,
             tablePagination: null,
             currentPage: 1,
+            visibleDetailRows: []
         }
     },
     directives: {
@@ -282,6 +312,14 @@ export default {
                 .replace('{to}', this.tablePagination.to || 0)
                 .replace('{total}', this.tablePagination.total || 0)
         },
+        useDetailRow: function() {
+            if (typeof this.tableData[0][this.detailRowId] === 'undefined') {
+                console.warn('You need to define "detail-row-id" in order for detail-row feature to work!')
+                return false
+            }
+
+            return this.detailRow.trim() !== ''
+        }
     },
     methods: {
         normalizeFields: function() {
@@ -456,7 +494,7 @@ export default {
                 this.sortOrder[0].sortField = field.sortField
             }
 
-            
+
             this.currentPage = 1    // reset page index
             this.loadData()
         },
@@ -487,7 +525,7 @@ export default {
                     this.descendingIcon;
             } else {
                 return '';
-            }  
+            }
         },
         sortIconOpacity: function(field) {
             //fields with stronger precedence have darker color
@@ -496,7 +534,7 @@ export default {
             //ex. 2 fields are selected: 1.0, 0.7
 
             //if there are more we go down evenly on the given spectrum
-            //ex. 6 fields are selected: 1.0, 0.86, 0.72, 0.58, 0.44, 0.3 
+            //ex. 6 fields are selected: 1.0, 0.86, 0.72, 0.58, 0.44, 0.3
 
             var max = 1.0;
             var min = 0.3;
@@ -613,6 +651,44 @@ export default {
         extractArgs: function(string) {
             return string.split(':')[1]
         },
+        detailRowCallback: function(item) {
+            var func = this.detailRow.trim()
+            if (func === '') {
+                return ''
+            }
+
+            if (typeof this.$parent[func] == 'function') {
+                return this.$parent[func].call(this.$parent, item)
+            }
+        },
+        isVisibleDetailRow: function(rowId) {
+            return this.visibleDetailRows.indexOf( rowId ) >= 0
+        },
+        showDetailRow: function(rowId) {
+            if (!this.isVisibleDetailRow(rowId)) {
+                this.visibleDetailRows.push(rowId)
+            }
+        },
+        hideDetailRow: function(rowId) {
+            if (this.isVisibleDetailRow(rowId)) {
+                this.visibleDetailRows.$remove(rowId)
+            }
+        },
+        toggleDetailRow: function(rowId) {
+            if (this.isVisibleDetailRow(rowId)) {
+                this.hideDetailRow(rowId)
+            } else {
+                this.showDetailRow(rowId)
+            }
+        },
+        onRowClass: function(dataItem, index) {
+            var func = this.rowClassCallback.trim()
+
+            if (func !== '' && typeof this.$parent[func] === 'function') {
+                return this.$parent[func].call(this.$parent, dataItem, index)
+            }
+            return ''
+        },
         onRowChanged: function(dataItem) {
             this.dispatchEvent('row-changed', dataItem)
             return true
@@ -623,6 +699,9 @@ export default {
         },
         onCellDoubleClicked: function(dataItem, field, event) {
             this.$dispatch(this.eventPrefix+'cell-dblclicked', dataItem, field, event)
+        },
+        onDetailRowClick: function(dataItem, event) {
+            this.$dispatch('detail-row-clicked', dataItem, event)
         },
         callPaginationConfig: function() {
             if (typeof this.$parent[this.paginationConfig] === 'function') {
@@ -663,6 +742,15 @@ export default {
                 this.$set(n, options[n])
             }
         },
+        'vuetable:toggle-detail': function(dataItem) {
+            this.toggleDetailRow(dataItem)
+        },
+        'vuetable:show-detail': function(dataItem) {
+            this.showDetailRow(dataItem)
+        },
+        'vuetable:hide-detail': function(dataItem) {
+            this.hideDetailRow(dataItem)
+        }
     },
     created: function() {
         this.normalizeFields()

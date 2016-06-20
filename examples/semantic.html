@@ -56,24 +56,28 @@
         .highlight {
             background-color: yellow;
         }
+        .vuetable-detail-row {
+            height: 200px;
+        }
+        .detail-row {
+            margin-left: 40px;
+        }
+        .expand-transition {
+            transition: all .5s ease;
+        }
+        .expand-enter, .expand-leave {
+            height: 0;
+            opacity: 0;
+        }
+        body {
+            overflow-y: scroll;
+        }
     </style>
 
 </head>
 <body>
 
-<!-- Sidebar Menu -->
-<div class="ui vertical inverted sidebar menu">
-    <a class="active item">Home</a>
-    <a class="item">Work</a>
-    <a class="item">Company</a>
-    <a class="item">Careers</a>
-    <a class="item">Login</a>
-    <a class="item">Signup</a>
-</div>
-
-
 <!-- Page Contents -->
-<div class="pusher">
   <div class="ui inverted vertical masthead center aligned segment">
 
     <div class="ui container">
@@ -98,7 +102,7 @@
     <div id="app" class="ui vertical stripe segment">
         <div class="ui container">
             <div id="content" class="ui basic segment">
-            <h3 class="ui header">List of Users</h3>
+                <h3 class="ui header">List of Users</h3>
                 <div class="ui grid">
                     <div class="ui left aligned nine wide column">
                         <div class="ui labeled icon input">
@@ -108,8 +112,12 @@
                         </div>
                         <button class="ui button primary" @click="setFilter">Go</button>
                         <button class="ui button" @click="resetFilter">Reset</button>
-                    </div>
-                    <div class="ui right aligned seven wide column">
+                        <div class="ui checkbox">
+                          <input type="checkbox" v-model="multiSort" tabindex="0" class="hidden">
+                          <label>Multisort (use Ctrl-Click)</label>
+                        </div>
+                </div>
+                        <div class="ui right aligned seven wide column">
                         <label>Pagination:</label>
                         <select class="ui simple dropdown" v-model="paginationComponent">
                             <option value="vuetable-pagination">vuetable-pagination</option>
@@ -135,22 +143,26 @@
                         </div>
                     </div>
                 </div>
-            <vuetable v-ref:vuetable
-                api-url="http://vuetable.ratiw.net/api/users"
-                pagination-path=""
-                :pagination-component="paginationComponent"
-                wrapper-class="vuetable-wrapper ui basic segment"
-                table-wrapper=".vuetable-wrapper"
-                :fields="fields"
-                :sort-order="sortOrder"
-                :multi-sort="multiSort"
-                :item-actions="itemActions"
-                :per-page="perPage"
-                :append-params="moreParams"
-            />
+                <vuetable v-ref:vuetable
+                    api-url="http://vuetable.ratiw.net/api/users"
+                    pagination-path=""
+                    :pagination-component="paginationComponent"
+                    wrapper-class="vuetable-wrapper ui basic segment"
+                    table-wrapper=".vuetable-wrapper"
+                    :fields="fields"
+                    :sort-order="sortOrder"
+                    :multi-sort="multiSort"
+                    :item-actions="itemActions"
+                    :per-page="perPage"
+                    :append-params="moreParams"
+                    detail-row="makeDetailRow"
+                    detail-row-id="id"
+                    detail-row-transition="expand"
+                    row-class-callback="rowClassCB"
+                ></vuetable>
+            </div>
         </div>
     </div>
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
@@ -160,7 +172,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.7.0/vue-resource.min.js"></script>
 <script src="../dist/vue-table.js"></script>
 <script>
+    $('.ui.checkbox').checkbox()
+
     var tableColumns = [
+        {
+            name: 'id',
+            title: '',
+            dataClass: 'center aligned',
+            callback: 'showDetailRow'
+        },
         {
           name: 'name',
           title: 'Full Name',
@@ -208,10 +228,10 @@
                 field: 'name',
                 direction: 'asc',
             }],
-            multiSort: false,
+            multiSort: true,
             paginationComponent: 'vuetable-pagination',
             perPage: 10,
-            paginationInfoTemplate: 'แสดง {from} ถึง {to} จากทั้งหมด {total} รายการ',
+            // paginationInfoTemplate: 'แสดง {from} ถึง {to} จากทั้งหมด {total} รายการ',
             itemActions: [
                 { name: 'view-item', label: '', icon: 'zoom icon', class: 'ui teal button' },
                 { name: 'edit-item', label: '', icon: 'edit icon', class: 'ui orange button'},
@@ -242,6 +262,14 @@
                 if (value == null) return ''
                 fmt = (typeof fmt == 'undefined') ? 'D MMM YYYY' : fmt
                 return moment(value, 'YYYY-MM-DD').format(fmt)
+            },
+            showDetailRow: function(value) {
+                var icon = this.$refs.vuetable.isVisibleDetailRow(value) ? 'down' : 'right'
+                return [
+                    '<a class="show-detail-row">',
+                        '<i class="chevron circle ' + icon + ' icon"></i>',
+                    '</a>'
+                ].join('')
             },
             setFilter: function() {
                 this.moreParams = [
@@ -278,6 +306,37 @@
                     new RegExp('(' + this.preg_quote(needle) + ')', 'ig'),
                     '<span class="highlight">$1</span>'
                 )
+            },
+            makeDetailRow: function(data) {
+                return [
+                    '<td colspan="7">',
+                        '<div class="detail-row ui form">',
+                            '<div class="inline field">',
+                                '<label>Name: </label>',
+                                '<span>' + data.name + '</span>',
+                            '</div>',
+                            '<div class="inline field">',
+                                '<label>Email: </label>',
+                                '<span>' + data.email + '</span>',
+                            '</div>',
+                            '<div class="inline field">',
+                                '<label>Nickname: </label>',
+                                '<span>' + data.nickname + '</span>',
+                            '</div>',
+                            '<div class="inline field">',
+                                '<label>Birthdate: </label>',
+                                '<span>' + data.birthdate + '</span>',
+                            '</div>',
+                            '<div class="inline field">',
+                                '<label>Gender: </label>',
+                                '<span>' + data.gender + '</span>',
+                            '</div>',
+                        '</div>',
+                    '</td>'
+                ].join('')
+            },
+            rowClassCB: function(data, index) {
+                return (index % 2) === 0 ? 'positive' : ''
             }
         },
         events: {
@@ -286,8 +345,7 @@
             },
             'vuetable:row-clicked': function(data, event) {
                 console.log('clicked:', data.name)
-                data.name = '! '+data.name
-                data.nickname = '<i>'+data.nickname+'</i>'
+                this.$broadcast('vuetable:toggle-detail', data.id)
             },
             'vuetable:action': function(action, data) {
                 console.log('vuetable:action', action, data)
