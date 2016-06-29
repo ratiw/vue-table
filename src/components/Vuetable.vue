@@ -712,7 +712,7 @@ export default {
             this.$dispatch(this.eventPrefix+'cell-dblclicked', dataItem, field, event)
         },
         onDetailRowClick: function(dataItem, event) {
-            this.$dispatch('detail-row-clicked', dataItem, event)
+            this.$dispatch(this.eventPrefix+'detail-row-clicked', dataItem, event)
         },
         callPaginationConfig: function() {
             if (typeof this.$parent[this.paginationConfig] === 'function') {
