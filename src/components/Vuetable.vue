@@ -293,7 +293,7 @@ export default {
     },
     data: function() {
         return {
-            version: '1.1.3',
+            version: '1.2.0',
             eventPrefix: 'vuetable:',
             tableData: null,
             tablePagination: null,
