@@ -4,7 +4,7 @@ vuetable - data table simplify!
 - No need to render the table yourself
 - One simple `vuetable` tag
 - Display data retrieved from server with sort options
-- Support multi-column sorting (v1.2.0)
+- Support multi-column sorting (v1.2.0) by @balping
 - Pagination component included, swap-able and extensible
 - Define fields to map your JSON data structure
 - Define row actions and capture the click event to do whatever you want
