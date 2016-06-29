@@ -27,7 +27,7 @@
             </thead>
             <tbody v-cloak>
                 <template v-for="(itemNumber, item) in tableData">
-                    <tr @click="onRowClicked(item, $event)" :render="onRowChanged(item)" :render="onRowChanged(item)" :class="onRowClass(item, itemNumber)">
+                    <tr @click="onRowClicked(item, $event)" :render="onRowChanged(item)" :class="onRowClass(item, itemNumber)">
                         <template v-for="field in fields">
                             <template v-if="field.visible">
                                 <template v-if="isSpecialField(field.name)">
