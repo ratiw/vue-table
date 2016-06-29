@@ -4,6 +4,7 @@ vuetable - data table simplify!
 - No need to render the table yourself
 - One simple `vuetable` tag
 - Display data retrieved from server with sort options
+- Support multi-column sorting (v1.2.0)
 - Pagination component included, swap-able and extensible
 - Define fields to map your JSON data structure
 - Define row actions and capture the click event to do whatever you want
@@ -14,6 +15,18 @@ vuetable - data table simplify!
 - Capture events from `vuetable` to manipulate your table and your data
 - Should work with any pre-defined JSON data structure
 - Should work with any CSS Framework, e.g. Semantic UI, Twitter's Bootstrap
+- Optional detail row to display additional data (v.1.2.0)
+
+##Breaking Changes
+####v.1.2.0
+-  `sort-order` option type was changed from `Object` to `Array` to support `multi-sort`, therefore it should be declared as array. #36
+
+    ```
+    <vuetable 
+      //...
+      :sort-order="[{ field: 'name', direction: 'asc' }]"
+    ></vuetable>
+    ```
 
 ---
 
