@@ -154,15 +154,21 @@
         <h2 class="sub-header">List of Users</h2>
         <hr>
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-7 form-inline">
                 <div class="form-inline form-group">
                     <label>Search:</label>
                     <input v-model="searchFor" class="form-control" @keyup.enter="setFilter">
                     <button class="btn btn-primary" @click="setFilter">Go</button>
                     <button class="btn btn-default" @click="resetFilter">Reset</button>
                 </div>
+                &nbsp;&nbsp;&nbsp;
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" v-model="multiSort"> Multisort (use Alt+Click)
+                    </label>
+                </div>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-5">
                 <div class="dropdown form-inline pull-right">
                     <label>Pagination:</label>
                     <select class="ui simple dropdown" v-model="paginationComponent">
