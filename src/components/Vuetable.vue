@@ -670,6 +670,8 @@ export default {
 
             if (typeof this.$parent[func] == 'function') {
                 return this.$parent[func].call(this.$parent, item)
+            } else {
+                console.error('Function "'+func+'()" does not exist!')
             }
         },
         isVisibleDetailRow: function(rowId) {
