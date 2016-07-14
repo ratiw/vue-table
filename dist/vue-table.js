@@ -892,6 +892,8 @@ exports.default = {
 
             if (typeof this.$parent[func] == 'function') {
                 return this.$parent[func].call(this.$parent, item);
+            } else {
+                console.error('Function "' + func + '()" does not exist!');
             }
         },
         isVisibleDetailRow: function isVisibleDetailRow(rowId) {
@@ -934,7 +936,7 @@ exports.default = {
             this.$dispatch(this.eventPrefix + 'cell-dblclicked', dataItem, field, event);
         },
         onDetailRowClick: function onDetailRowClick(dataItem, event) {
-            this.$dispatch('detail-row-clicked', dataItem, event);
+            this.$dispatch(this.eventPrefix + 'detail-row-clicked', dataItem, event);
         },
         callPaginationConfig: function callPaginationConfig() {
             if (typeof this.$parent[this.paginationConfig] === 'function') {
