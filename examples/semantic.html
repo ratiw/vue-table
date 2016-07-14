@@ -9,7 +9,7 @@
 
     <!-- Site Properties -->
     <title>vuetable - Semantic</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
 
     <style type="text/css">
@@ -113,28 +113,46 @@
                         <button class="ui button primary" @click="setFilter">Go</button>
                         <button class="ui button" @click="resetFilter">Reset</button>
                         &nbsp;
-                        <div class="ui checkbox">
-                          <input type="checkbox" v-model="multiSort" tabindex="0" class="hidden">
-                          <label>Multisort (use Alt+Click)</label>
-                        </div>
+                    </div>
+                    <div class="ui right aligned seven wide column">
+                        <button class="ui basic button" id="settingsBtn">
+                            <i class="setting icon"></i>
+                            Settings
+                        </button>
+                    </div>
                 </div>
-                        <div class="ui right aligned seven wide column">
-                        <label>Pagination:</label>
-                        <select class="ui simple dropdown" v-model="paginationComponent">
-                            <option value="vuetable-pagination">vuetable-pagination</option>
-                            <option value="vuetable-pagination-dropdown">vuetable-pagination-dropdown</option>
-                        </select>
-                        <label>Per Page:</label>
-                        <select class="ui simple dropdown" v-model="perPage">
-                            <option value=10>10</option>
-                            <option value=15>15</option>
-                            <option value=20>20</option>
-                            <option value=25>25</option>
-                        </select>
-                        <div class="ui simple dropdown">
-                            <button class="ui icon button"><i class="ui setting icon"></i></button>
-                            <div v-cloak class="left menu">
-                                <div v-for="field in fields" class="item">
+                <div class="ui small modal" id="settingsModal">
+                    <div class="header">Settings</div>
+                    <div class="content ui form">
+                        <div class="field">
+                            <div class="ui checkbox">
+                              <input type="checkbox" v-model="multiSort">
+                              <label>Multisort (use Alt+Click)</label>
+                            </div>
+                        </div>
+                        <div class="ui divider"></div>
+                        <div class="field">
+                            <label>Pagination:</label>
+                            <select class="ui simple dropdown" v-model="paginationComponent">
+                                <option value="vuetable-pagination">vuetable-pagination</option>
+                                <option value="vuetable-pagination-dropdown">vuetable-pagination-dropdown</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Per Page:</label>
+                            <select class="ui simple dropdown" v-model="perPage">
+                                <option value=10>10</option>
+                                <option value=15>15</option>
+                                <option value=20>20</option>
+                                <option value=25>25</option>
+                            </select>
+                        </div>
+                        <div class="ui fluid card">
+                            <div class="content">
+                                <div class="header">Visible fields</div>
+                            </div>
+                            <div class="content">
+                                <div v-for="field in fields" class="field">
                                     <div class="ui checkbox">
                                         <input type="checkbox" v-model="field.visible">
                                         <label>{{ field.title == '' ? field.name.replace('__', '') : field.title | capitalize}}</label>
@@ -142,6 +160,9 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="actions">
+                        <div class="ui cancel button">Close</div>
                     </div>
                 </div>
                 <vuetable v-ref:vuetable
@@ -166,14 +187,19 @@
     </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment-with-locales.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.24/vue.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.7.0/vue-resource.min.js"></script>
 <script src="../dist/vue-table.js"></script>
 <script>
-    $('.ui.checkbox').checkbox()
+    $('#settingsModal').modal({
+        detachable: false,
+        onVisible: function() {
+            $('.ui.checkbox').checkbox()
+        }
+    }).modal('attach events', '#settingsBtn', 'show')
 
     var tableColumns = [
         {
