@@ -27,7 +27,7 @@
             </thead>
             <tbody v-cloak>
                 <template v-for="(itemNumber, item) in tableData">
-                    <tr @click="onRowClicked(item, $event)" :render="onRowChanged(item)" :render="onRowChanged(item)" :class="onRowClass(item, itemNumber)">
+                    <tr @click="onRowClicked(item, $event)" :render="onRowChanged(item)" :class="onRowClass(item, itemNumber)">
                         <template v-for="field in fields">
                             <template v-if="field.visible">
                                 <template v-if="isSpecialField(field.name)">
@@ -293,7 +293,7 @@ export default {
     },
     data: function() {
         return {
-            version: '1.2.0',
+            version: '1.2.1',
             eventPrefix: 'vuetable:',
             tableData: null,
             tablePagination: null,
@@ -670,6 +670,8 @@ export default {
 
             if (typeof this.$parent[func] == 'function') {
                 return this.$parent[func].call(this.$parent, item)
+            } else {
+                console.error('Function "'+func+'()" does not exist!')
             }
         },
         isVisibleDetailRow: function(rowId) {
@@ -712,7 +714,7 @@ export default {
             this.$dispatch(this.eventPrefix+'cell-dblclicked', dataItem, field, event)
         },
         onDetailRowClick: function(dataItem, event) {
-            this.$dispatch('detail-row-clicked', dataItem, event)
+            this.$dispatch(this.eventPrefix+'detail-row-clicked', dataItem, event)
         },
         callPaginationConfig: function() {
             if (typeof this.$parent[this.paginationConfig] === 'function') {
