@@ -474,6 +474,12 @@ exports.default = {
                 return 'paginationConfig';
             }
         },
+        paginationConfigCallback: {
+            type: String,
+            default: function _default() {
+                return 'paginationConfig';
+            }
+        },
         itemActions: {
             type: Array,
             default: function _default() {
@@ -949,8 +955,20 @@ exports.default = {
             this.$dispatch(this.eventPrefix + 'detail-row-clicked', dataItem, event);
         },
         callPaginationConfig: function callPaginationConfig() {
-            if (typeof this.$parent[this.paginationConfig] === 'function') {
-                this.$parent[this.paginationConfig].call(this.$parent, this.$refs.pagination.$options.name);
+            if (typeof this.$parent[this.paginationConfigCallback] === 'function') {
+                this.$parent[this.paginationConfigCallback].call(this.$parent, this.$refs.pagination.$options.name);
+            }
+        },
+        logDeprecatedMessage: function logDeprecatedMessage(name, replacer) {
+            var msg = '"{name}" prop is being deprecated and will be removed in the future. Please use "{replacer}" instead.';
+            console.warn(msg.replace('{name}', name).replace('{replacer}', replacer));
+        },
+        checkForDeprecatedProps: function checkForDeprecatedProps() {
+            if (this.paginationConfig !== 'paginationConfig') {
+                this.logDeprecatedMessage('paginationConfig', 'paginationConfigCallback');
+            }
+            if (this.detailRow !== '') {
+                this.logDeprecatedMessage('detail-row', 'detail-row-callback');
             }
         }
     },
@@ -998,6 +1016,7 @@ exports.default = {
         }
     },
     created: function created() {
+        this.checkForDeprecatedProps();
         this.normalizeFields();
         if (this.loadOnStart) {
             this.loadData();
