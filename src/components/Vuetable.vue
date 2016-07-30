@@ -48,10 +48,10 @@
                                     </td>
                                 </template>
                                 <template v-else>
-                                    <td v-if="hasCallback(field)" class="{{field.dataClass}}" @dblclick="onCellDoubleClicked(item, field, $event)">
+                                    <td v-if="hasCallback(field)" class="{{field.dataClass}}" @click="onCellClicked(item, field, $event)" @dblclick="onCellDoubleClicked(item, field, $event)">
                                         {{{ callCallback(field, item) }}}
                                     </td>
-                                    <td v-else class="{{field.dataClass}}" @dblclick="onCellDoubleClicked(item, field, $event)">
+                                    <td v-else class="{{field.dataClass}}" @click="onCellClicked(item, field, $event)" @dblclick="onCellDoubleClicked(item, field, $event)">
                                         {{{ getObjectValue(item, field.name, "") }}}
                                     </td>
                                 </template>
@@ -716,6 +716,9 @@ export default {
         onRowClicked: function(dataItem, event) {
             this.$dispatch(this.eventPrefix+'row-clicked', dataItem, event)
             return true
+        },
+        onCellClicked: function(dataItem, field, event) {
+            this.$dispatch(this.eventPrefix+'cell-clicked', dataItem, field, event)
         },
         onCellDoubleClicked: function(dataItem, field, event) {
             this.$dispatch(this.eventPrefix+'cell-dblclicked', dataItem, field, event)
