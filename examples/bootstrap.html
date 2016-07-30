@@ -453,7 +453,16 @@
                         dropdownClass: 'form-control'
                     })
                 }
-            }
+            },
+            // -------------------------------------------------------------------------------------------
+            // You can change how sort params string is constructed by overriding getSortParam() like this
+            // -------------------------------------------------------------------------------------------
+            // getSortParam: function(sortOrder) {
+            //     console.log('parent getSortParam:', JSON.stringify(sortOrder))
+            //     return sortOrder.map(function(sort) {
+            //         return (sort.direction === 'desc' ? '+' : '') + sort.field
+            //     }).join(',')
+            // }
         },
         events: {
             'vuetable:row-changed': function(data) {

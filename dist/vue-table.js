@@ -663,6 +663,13 @@ exports.default = {
                 return '';
             }
 
+            if (typeof this.$parent['getSortParam'] == 'function') {
+                return this.$parent['getSortParam'].call(this.$parent, this.sortOrder);
+            }
+
+            return this.getDefaultSortParam();
+        },
+        getDefaultSortParam: function getDefaultSortParam() {
             var result = '';
 
             for (var i = 0; i < this.sortOrder.length; i++) {
