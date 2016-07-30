@@ -469,8 +469,13 @@
                 console.log('row-changed:', data.name)
             },
             'vuetable:row-clicked': function(data, event) {
-                console.log('clicked:', data.name)
-                this.$broadcast('vuetable:toggle-detail', data.id)
+                console.log('row-clicked:', data.name)
+            },
+            'vuetable:cell-clicked': function(data, field, event) {
+                console.log('cell-clicked:', field.name)
+                if (field.name !== '__actions') {
+                    this.$broadcast('vuetable:toggle-detail', data.id)
+                }
             },
             'vuetable:action': function(action, data) {
                 console.log('vuetable:action', action, data)
