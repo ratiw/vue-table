@@ -230,6 +230,12 @@ export default {
                 return 'paginationConfig'
             }
         },
+        paginationConfigCallback: {
+            type: String,
+            default: function() {
+                return 'paginationConfig'
+            }
+        },
         itemActions: {
             type: Array,
             default: function() {
@@ -727,10 +733,22 @@ export default {
             this.$dispatch(this.eventPrefix+'detail-row-clicked', dataItem, event)
         },
         callPaginationConfig: function() {
-            if (typeof this.$parent[this.paginationConfig] === 'function') {
-                this.$parent[this.paginationConfig].call(this.$parent, this.$refs.pagination.$options.name)
+            if (typeof this.$parent[this.paginationConfigCallback] === 'function') {
+                this.$parent[this.paginationConfigCallback].call(this.$parent, this.$refs.pagination.$options.name)
             }
         },
+        logDeprecatedMessage: function(name, replacer) {
+            var msg = '"{name}" prop is being deprecated and will be removed in the future. Please use "{replacer}" instead.'
+            console.warn(msg.replace('{name}', name).replace('{replacer}', replacer))
+        },
+        checkForDeprecatedProps: function() {
+            if (this.paginationConfig !== 'paginationConfig') {
+                this.logDeprecatedMessage('paginationConfig', 'paginationConfigCallback')
+            }
+            if (this.detailRow !== '') {
+                this.logDeprecatedMessage('detail-row', 'detail-row-callback')
+            }
+        }
     },
     watch: {
         'multiSort': function(newVal, oldVal){
@@ -776,6 +794,7 @@ export default {
         }
     },
     created: function() {
+        this.checkForDeprecatedProps()
         this.normalizeFields()
         if (this.loadOnStart) {
             this.loadData()
