@@ -27,7 +27,7 @@
             </thead>
             <tbody v-cloak>
                 <template v-for="(itemNumber, item) in tableData">
-                    <tr @click="onRowClicked(item, $event)" :render="onRowChanged(item)" :render="onRowChanged(item)" :class="onRowClass(item, itemNumber)">
+                    <tr @click="onRowClicked(item, $event)" :render="onRowChanged(item)" :class="onRowClass(item, itemNumber)">
                         <template v-for="field in fields">
                             <template v-if="field.visible">
                                 <template v-if="isSpecialField(field.name)">
@@ -293,7 +293,7 @@ export default {
     },
     data: function() {
         return {
-            version: '1.2.0',
+            version: '1.2.1',
             eventPrefix: 'vuetable:',
             tableData: null,
             tablePagination: null,
@@ -391,8 +391,9 @@ export default {
                     self.tableData = self.getObjectValue(response.data, self.dataPath, null)
                     self.tablePagination = self.getObjectValue(response.data, self.paginationPath, null)
                     if (self.tablePagination === null) {
-                        console.warn('vuetable: pagination-path "' + self.paginationPath + '"" not found. '
-                            + 'It looks like the data returned from the sever does not have pagination information.'
+                        console.warn('vuetable: pagination-path "' + self.paginationPath + '" not found. '
+                            + 'It looks like the data returned from the sever does not have pagination information '
+                            + 'or you may have set it incorrectly.'
                         )
                     }
 
@@ -609,7 +610,7 @@ export default {
             if (path.trim() != '') {
                 var keys = path.split('.')
                 keys.forEach(function(key) {
-                    if (typeof obj[key] != 'undefined' && obj[key] !== null) {
+                    if (obj !== null && typeof obj[key] != 'undefined' && obj[key] !== null) {
                         obj = obj[key]
                     } else {
                         obj = defaultValue
