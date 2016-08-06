@@ -295,7 +295,8 @@ function restoreState (vm, state, isRoot) {
 }
 
 function format (id) {
-  return id.match(/[^\/]+\.vue$/)[0]
+  var match = id.match(/[^\/]+\.vue$/)
+  return match ? match[0] : id
 }
 
 },{}],2:[function(require,module,exports){
@@ -541,7 +542,6 @@ exports.default = {
     },
     data: function data() {
         return {
-            version: '1.2.1',
             eventPrefix: 'vuetable:',
             tableData: null,
             tablePagination: null,
