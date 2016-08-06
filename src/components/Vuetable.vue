@@ -60,7 +60,7 @@
                     </tr>
                     <template v-if="useDetailRow">
                         <tr v-if="isVisibleDetailRow(item[detailRowId])"
-                            v-html="detailRowCallback(item)"
+                            v-html="callDetailRowCallback(item)"
                             @click="onDetailRowClick(item, $event)"
                             :transition="detailRowTransition"
                             class="{{detailRowClass}}"
@@ -274,6 +274,10 @@ export default {
             type: String,
             default: ''
         },
+        detailRowCallback: {
+            type: String,
+            default: ''
+        },
         detailRowId: {
             type: String,
             default: 'id'
@@ -327,7 +331,7 @@ export default {
                 return false
             }
 
-            return this.detailRow.trim() !== ''
+            return this.detailRowCallback.trim() !== ''
         }
     },
     methods: {
@@ -670,8 +674,8 @@ export default {
         extractArgs: function(string) {
             return string.split(':')[1]
         },
-        detailRowCallback: function(item) {
-            var func = this.detailRow.trim()
+        callDetailRowCallback: function(item) {
+            var func = this.detailRowCallback.trim()
             if (func === '') {
                 return ''
             }
