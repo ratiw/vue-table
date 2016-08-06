@@ -69,6 +69,9 @@
             height: 0;
             opacity: 0;
         }
+        tr.odd {
+            background-color: #e6f5ff;
+        }
         body {
             overflow-y: scroll;
         }
@@ -335,6 +338,7 @@
                 )
             },
             makeDetailRow: function(data) {
+                console.log('makeDetailRow:', data.id)
                 return [
                     '<td colspan="7">',
                         '<div class="detail-row ui form">',
@@ -363,7 +367,7 @@
                 ].join('')
             },
             rowClassCB: function(data, index) {
-                return (index % 2) === 0 ? 'positive' : ''
+                return (index % 2) === 0 ? 'odd' : 'even'
             },
             // -------------------------------------------------------------------------------------------
             // You can change how sort params string is constructed by overriding getSortParam() like this
