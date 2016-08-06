@@ -132,12 +132,6 @@ export default {
             type: Array,
             default: function() {
                 return [];
-                /* array of
-                    {
-                        field: '',
-                        direction: 'asc'
-                    }
-                objects */
             }
         },
         multiSort: {
