@@ -18,7 +18,13 @@ vuetable - data table simplify!
 - Optional detail row to display additional data (v.1.2.0)
 
 ##Breaking Changes
-####v.1.2.0
+####v1.3.0
+  - deprecated props 
+      - `paginateConfig`: use `paginateConfigCallback` instead
+      - `detail-row`: use `detail-row-callback` instead
+
+
+####v1.2.0
 -  `sort-order` option type was changed from `Object` to `Array` to support `multi-sort`, therefore it should be declared as array. [#36](https://github.com/ratiw/vue-table/pull/36)
 
     ```
