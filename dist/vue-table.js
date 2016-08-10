@@ -818,7 +818,8 @@ exports.default = {
             }
         },
         isSpecialField: function isSpecialField(fieldName) {
-            return fieldName.startsWith('__');
+            // return fieldName.startsWith('__')
+            return fieldName.slice(0, 2) === '__';
         },
         hasCallback: function hasCallback(item) {
             return item.callback ? true : false;

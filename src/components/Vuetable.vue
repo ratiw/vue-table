@@ -593,7 +593,8 @@ export default {
             }
         },
         isSpecialField: function(fieldName) {
-            return fieldName.startsWith('__')
+            // return fieldName.startsWith('__')
+            return fieldName.slice(0, 2) === '__'
         },
         hasCallback: function(item) {
             return item.callback ? true : false
