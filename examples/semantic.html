@@ -38,7 +38,7 @@
           color: #2185d0;
           cursor: pointer;
         }
-        .vuetable-actions {
+        .vuetable-actions, .custom-action {
           width: 15%;
           padding: 12px 0px;
           text-align: center;
@@ -239,6 +239,12 @@
             callback: 'gender'
         },
         {
+            name: '__component:custom-action',
+            title: "Component",
+            titleClass: 'center aligned',
+            dataClass: 'custom-action center aligned',
+        },
+        {
             name: '__actions',
             dataClass: 'center aligned',
         }
@@ -247,6 +253,34 @@
     Vue.config.debug = true
 
     var E_SERVER_ERROR = 'Error communicating with the server'
+
+
+    Vue.component('custom-action', {
+        template: [
+            '<div>',
+                '<button class="ui red button" @click="itemAction(\'view-item\', rowData)"><i class="zoom icon"></i></button>',
+                '<button class="ui blue button" @click="itemAction(\'edit-item\', rowData)"><i class="edit icon"></i></button>',
+                '<button class="ui green button" @click="itemAction(\'delete-item\', rowData)"><i class="delete icon"></i></button>',
+            '</div>'
+        ].join(''),
+        props: {
+            rowData: {
+                type: Object,
+                required: true
+            }
+        },
+        methods: {
+            itemAction: function(action, data) {
+                sweetAlert('custom-action: ' + action, data.name)
+            },
+            onClick: function(event) {
+                console.log('custom-action: on-click', event.target)
+            },
+            onDoubleClick: function(event) {
+                console.log('custom-action: on-dblclick', event.target)
+            }
+        }
+    })
 
     new Vue({
         el: '#app',

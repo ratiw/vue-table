@@ -46,6 +46,9 @@
                                             </button>
                                         </template>
                                     </td>
+                                    <td v-if="extractName(field.name) == '__component'" class="{{field.dataClass}}">
+                                        <component :is="extractArgs(field.name)" :row-data="item"></component>
+                                    </td>
                                 </template>
                                 <template v-else>
                                     <td v-if="hasCallback(field)" class="{{field.dataClass}}" @click="onCellClicked(item, field, $event)" @dblclick="onCellDoubleClicked(item, field, $event)">
@@ -331,7 +334,7 @@ export default {
             }
 
             return this.detailRowCallback.trim() !== ''
-        }
+        },
     },
     methods: {
         normalizeFields: function() {
