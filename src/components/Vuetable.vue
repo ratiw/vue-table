@@ -403,10 +403,12 @@ export default {
                         )
                     }
 
-                    self.dispatchEvent('load-success', response)
-                    self.broadcastEvent('load-success', self.tablePagination)
+                    self.$nextTick(function() {
+                        self.dispatchEvent('load-success', response)
+                        self.broadcastEvent('load-success', self.tablePagination)
 
-                    self.hideLoadingAnimation(wrapper)
+                        self.hideLoadingAnimation(wrapper)
+                    })
                 }, function(response) {
                     self.dispatchEvent('load-error', response)
                     self.broadcastEvent('load-error', response)
