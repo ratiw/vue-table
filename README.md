@@ -190,16 +190,18 @@ Then, reference the vuetable via `<vuetable>` tag as following
 	<script>
 		new Vue({
 			el: '#app',
-			columns: [
-				'firstname',
-				'lastname',
-				'nickname',
-				'birthdate',
-				'group.name_en'
-				'gender',
-				'last_login',
-				'__actions'
-			]
+			data: {
+				columns: [
+					'firstname',
+					'lastname',
+					'nickname',
+					'birthdate',
+					'group.name_en'
+					'gender',
+					'last_login',
+					'__actions'
+				]
+			}
 		})
 	</script>
 ```
