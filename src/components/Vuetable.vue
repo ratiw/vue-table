@@ -378,20 +378,12 @@ export default {
             })
         },
         loadData: function() {
+            var self = this
+
             var wrapper = document.querySelector(this.tableWrapper)
             this.showLoadingAnimation(wrapper)
 
-            var params = [
-                this.queryParams.sort + '=' + this.getSortParam(),
-                this.queryParams.page + '=' + this.currentPage,
-                this.queryParams.perPage + '=' + this.perPage
-            ]
-
-            var url = this.apiUrl + '?' + params.join('&')
-            if (this.appendParams.length > 0) {
-                url += '&'+this.appendParams.join('&')
-            }
-            var self = this
+            var url = this.apiUrl + '?' + this.getAllQueryParams()
             this.$http.get(url, this.httpData, this.httpOptions)
                 .then(function(response) {
                     self.tableData = self.getObjectValue(response.data, self.dataPath, null)
@@ -415,6 +407,19 @@ export default {
 
                     self.hideLoadingAnimation(wrapper)
                 })
+        },
+        getAllQueryParams: function() {
+            var params = [
+                this.queryParams.sort + '=' + this.getSortParam(),
+                this.queryParams.page + '=' + this.currentPage,
+                this.queryParams.perPage + '=' + this.perPage
+            ].join('&')
+
+            if (this.appendParams.length > 0) {
+                params += '&'+this.appendParams.join('&')
+            }
+
+            return params
         },
         showLoadingAnimation: function(wrapper) {
             if (wrapper !== null) {
