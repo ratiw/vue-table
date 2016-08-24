@@ -328,7 +328,7 @@ export default {
                 .replace('{total}', this.tablePagination.total || 0)
         },
         useDetailRow: function() {
-            if (typeof this.tableData[0][this.detailRowId] === 'undefined') {
+            if (this.tableData && typeof this.tableData[0][this.detailRowId] === 'undefined') {
                 console.warn('You need to define "detail-row-id" in order for detail-row feature to work!')
                 return false
             }

@@ -567,7 +567,7 @@ exports.default = {
             return this.paginationInfoTemplate.replace('{from}', this.tablePagination.from || 0).replace('{to}', this.tablePagination.to || 0).replace('{total}', this.tablePagination.total || 0);
         },
         useDetailRow: function useDetailRow() {
-            if (typeof this.tableData[0][this.detailRowId] === 'undefined') {
+            if (this.tableData && typeof this.tableData[0][this.detailRowId] === 'undefined') {
                 console.warn('You need to define "detail-row-id" in order for detail-row feature to work!');
                 return false;
             }
@@ -633,10 +633,12 @@ exports.default = {
                     console.warn('vuetable: pagination-path "' + self.paginationPath + '" not found. ' + 'It looks like the data returned from the sever does not have pagination information ' + 'or you may have set it incorrectly.');
                 }
 
-                self.dispatchEvent('load-success', response);
-                self.broadcastEvent('load-success', self.tablePagination);
+                self.$nextTick(function () {
+                    self.dispatchEvent('load-success', response);
+                    self.broadcastEvent('load-success', self.tablePagination);
 
-                self.hideLoadingAnimation(wrapper);
+                    self.hideLoadingAnimation(wrapper);
+                });
             }, function (response) {
                 self.dispatchEvent('load-error', response);
                 self.broadcastEvent('load-error', response);
