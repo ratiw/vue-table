@@ -616,16 +616,12 @@ exports.default = {
             });
         },
         loadData: function loadData() {
+            var self = this;
+
             var wrapper = document.querySelector(this.tableWrapper);
             this.showLoadingAnimation(wrapper);
 
-            var params = [this.queryParams.sort + '=' + this.getSortParam(), this.queryParams.page + '=' + this.currentPage, this.queryParams.perPage + '=' + this.perPage];
-
-            var url = this.apiUrl + '?' + params.join('&');
-            if (this.appendParams.length > 0) {
-                url += '&' + this.appendParams.join('&');
-            }
-            var self = this;
+            var url = this.apiUrl + '?' + this.getAllQueryParams();
             this.$http.get(url, this.httpData, this.httpOptions).then(function (response) {
                 self.tableData = self.getObjectValue(response.data, self.dataPath, null);
                 self.tablePagination = self.getObjectValue(response.data, self.paginationPath, null);
@@ -645,6 +641,15 @@ exports.default = {
 
                 self.hideLoadingAnimation(wrapper);
             });
+        },
+        getAllQueryParams: function getAllQueryParams() {
+            var params = [this.queryParams.sort + '=' + this.getSortParam(), this.queryParams.page + '=' + this.currentPage, this.queryParams.perPage + '=' + this.perPage].join('&');
+
+            if (this.appendParams.length > 0) {
+                params += '&' + this.appendParams.join('&');
+            }
+
+            return params;
         },
         showLoadingAnimation: function showLoadingAnimation(wrapper) {
             if (wrapper !== null) {
@@ -1220,7 +1225,7 @@ exports.default = {
             return this.onEachSide * 2 + 1;
         },
         windowStart: function windowStart() {
-            if (this.tablePagination.current_page <= this.onEachSide) {
+            if (!this.tablePagination || this.tablePagination.current_page <= this.onEachSide) {
                 return 1;
             } else if (this.tablePagination.current_page >= this.totalPage - this.onEachSide) {
                 return this.totalPage - this.onEachSide * 2;

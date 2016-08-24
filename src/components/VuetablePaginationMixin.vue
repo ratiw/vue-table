@@ -80,7 +80,7 @@ export default {
             return this.onEachSide * 2 +1;
         },
         windowStart: function() {
-            if (this.tablePagination.current_page <= this.onEachSide) {
+            if (!this.tablePagination || this.tablePagination.current_page <= this.onEachSide) {
                 return 1
             } else if (this.tablePagination.current_page >= (this.totalPage - this.onEachSide)) {
                 return this.totalPage - this.onEachSide*2
