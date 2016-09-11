@@ -535,6 +535,10 @@ exports.default = {
             type: String,
             default: 'vuetable-detail-row'
         },
+        detailRowComponent: {
+            type: String,
+            default: ''
+        },
         rowClassCallback: {
             type: String,
             default: ''
@@ -571,8 +575,17 @@ exports.default = {
                 console.warn('You need to define "detail-row-id" in order for detail-row feature to work!');
                 return false;
             }
-
-            return this.detailRowCallback.trim() !== '';
+            var result = this.detailRowCallback.trim() !== '' || this.detailRowComponent !== '';
+            console.log('aaa>>>', this.detailRowComponent, result);
+            return result;
+        },
+        useDetailRowComponent: function useDetailRowComponent() {
+            return this.detailRowComponent !== '';
+        },
+        countVisibleFields: function countVisibleFields() {
+            return this.fields.filter(function (field) {
+                return field.visible;
+            }).length;
         }
     },
     methods: {
@@ -1033,7 +1046,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"{{wrapperClass}}\">\n    <table class=\"vuetable {{tableClass}}\">\n        <thead>\n            <tr>\n                <template v-for=\"field in fields\">\n                    <template v-if=\"field.visible\">\n                        <template v-if=\"isSpecialField(field.name)\">\n                            <th v-if=\"extractName(field.name) == '__checkbox'\" class=\"{{field.titleClass || ''}}\">\n                                <input type=\"checkbox\" @change=\"toggleAllCheckboxes($event.target.checked, field.name)\">\n                            </th>\n                            <th v-else=\"\" id=\"{{field.name}}\" class=\"{{field.titleClass || ''}}\">\n                                {{field.title || ''}}\n                            </th>\n                        </template>\n                        <template v-else=\"\">\n                            <th @click=\"orderBy(field, $event)\" id=\"_{{field.name}}\" class=\"{{field.titleClass || ''}} {{isSortable(field) ? 'sortable' : ''}}\">\n                                {{getTitle(field) | capitalize}}&nbsp;\n                                <i v-if=\"isCurrentSortField(field)\" class=\"{{ sortIcon(field) }}\" v-bind:style=\"{opacity: sortIconOpacity(field)}\"></i>\n                            </th>\n                        </template>\n                    </template>\n                </template>\n            </tr>\n        </thead>\n        <tbody v-cloak=\"\">\n            <template v-for=\"(itemNumber, item) in tableData\">\n                <tr @click=\"onRowClicked(item, $event)\" :render=\"onRowChanged(item)\" :class=\"onRowClass(item, itemNumber)\">\n                    <template v-for=\"field in fields\">\n                        <template v-if=\"field.visible\">\n                            <template v-if=\"isSpecialField(field.name)\">\n                                <td v-if=\"extractName(field.name) == '__sequence'\" class=\"vuetable-sequence {{field.dataClass}}\" v-html=\"tablePagination.from + itemNumber\">\n                                </td>\n                                <td v-if=\"extractName(field.name) == '__checkbox'\" class=\"vuetable-checkboxes {{field.dataClass}}\">\n                                    <input type=\"checkbox\" @change=\"toggleCheckbox($event.target.checked, item, field.name)\" :checked=\"isSelectedRow(item, field.name)\">\n                                </td>\n                                <td v-if=\"field.name == '__actions'\" class=\"vuetable-actions {{field.dataClass}}\">\n                                    <template v-for=\"action in itemActions\">\n                                        <button class=\"{{ action.class }}\" @click=\"callAction(action.name, item)\" v-attr=\"action.extra\">\n                                            <i class=\"{{ action.icon }}\"></i> {{ action.label }}\n                                        </button>\n                                    </template>\n                                </td>\n                                <td v-if=\"extractName(field.name) == '__component'\" class=\"{{field.dataClass}}\">\n                                    <component :is=\"extractArgs(field.name)\" :row-data=\"item\"></component>\n                                </td>\n                            </template>\n                            <template v-else=\"\">\n                                <td v-if=\"hasCallback(field)\" class=\"{{field.dataClass}}\" @click=\"onCellClicked(item, field, $event)\" @dblclick=\"onCellDoubleClicked(item, field, $event)\">\n                                    {{{ callCallback(field, item) }}}\n                                </td>\n                                <td v-else=\"\" class=\"{{field.dataClass}}\" @click=\"onCellClicked(item, field, $event)\" @dblclick=\"onCellDoubleClicked(item, field, $event)\">\n                                    {{{ getObjectValue(item, field.name, \"\") }}}\n                                </td>\n                            </template>\n                        </template>\n                    </template>\n                </tr>\n                <template v-if=\"useDetailRow\">\n                    <tr v-if=\"isVisibleDetailRow(item[detailRowId])\" v-html=\"callDetailRowCallback(item)\" @click=\"onDetailRowClick(item, $event)\" :transition=\"detailRowTransition\" class=\"{{detailRowClass}}\"></tr>\n                </template>\n            </template>\n        </tbody>\n    </table>\n    <div v-if=\"showPagination\" class=\"vuetable-pagination {{paginationClass}}\">\n        <div class=\"vuetable-pagination-info {{paginationInfoClass}}\" v-html=\"paginationInfo\">\n        </div>\n        <div v-show=\"tablePagination &amp;&amp; tablePagination.last_page > 1\" class=\"vuetable-pagination-component {{paginationComponentClass}}\">\n            <component v-ref:pagination=\"\" :is=\"paginationComponent\"></component>\n        </div>\n    </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"{{wrapperClass}}\">\n    <table class=\"vuetable {{tableClass}}\">\n        <thead>\n            <tr>\n                <template v-for=\"field in fields\">\n                    <template v-if=\"field.visible\">\n                        <template v-if=\"isSpecialField(field.name)\">\n                            <th v-if=\"extractName(field.name) == '__checkbox'\" class=\"{{field.titleClass || ''}}\">\n                                <input type=\"checkbox\" @change=\"toggleAllCheckboxes($event.target.checked, field.name)\">\n                            </th>\n                            <th v-else=\"\" id=\"{{field.name}}\" class=\"{{field.titleClass || ''}}\">\n                                {{field.title || ''}}\n                            </th>\n                        </template>\n                        <template v-else=\"\">\n                            <th @click=\"orderBy(field, $event)\" id=\"_{{field.name}}\" class=\"{{field.titleClass || ''}} {{isSortable(field) ? 'sortable' : ''}}\">\n                                {{getTitle(field) | capitalize}}&nbsp;\n                                <i v-if=\"isCurrentSortField(field)\" class=\"{{ sortIcon(field) }}\" v-bind:style=\"{opacity: sortIconOpacity(field)}\"></i>\n                            </th>\n                        </template>\n                    </template>\n                </template>\n            </tr>\n        </thead>\n        <tbody v-cloak=\"\">\n            <template v-for=\"(itemNumber, item) in tableData\">\n                <tr @click=\"onRowClicked(item, $event)\" :render=\"onRowChanged(item)\" :class=\"onRowClass(item, itemNumber)\">\n                    <template v-for=\"field in fields\">\n                        <template v-if=\"field.visible\">\n                            <template v-if=\"isSpecialField(field.name)\">\n                                <td v-if=\"extractName(field.name) == '__sequence'\" class=\"vuetable-sequence {{field.dataClass}}\" v-html=\"tablePagination.from + itemNumber\">\n                                </td>\n                                <td v-if=\"extractName(field.name) == '__checkbox'\" class=\"vuetable-checkboxes {{field.dataClass}}\">\n                                    <input type=\"checkbox\" @change=\"toggleCheckbox($event.target.checked, item, field.name)\" :checked=\"isSelectedRow(item, field.name)\">\n                                </td>\n                                <td v-if=\"field.name == '__actions'\" class=\"vuetable-actions {{field.dataClass}}\">\n                                    <template v-for=\"action in itemActions\">\n                                        <button class=\"{{ action.class }}\" @click=\"callAction(action.name, item)\" v-attr=\"action.extra\">\n                                            <i class=\"{{ action.icon }}\"></i> {{ action.label }}\n                                        </button>\n                                    </template>\n                                </td>\n                                <td v-if=\"extractName(field.name) == '__component'\" class=\"{{field.dataClass}}\">\n                                    <component :is=\"extractArgs(field.name)\" :row-data=\"item\"></component>\n                                </td>\n                            </template>\n                            <template v-else=\"\">\n                                <td v-if=\"hasCallback(field)\" class=\"{{field.dataClass}}\" @click=\"onCellClicked(item, field, $event)\" @dblclick=\"onCellDoubleClicked(item, field, $event)\">\n                                    {{{ callCallback(field, item) }}}\n                                </td>\n                                <td v-else=\"\" class=\"{{field.dataClass}}\" @click=\"onCellClicked(item, field, $event)\" @dblclick=\"onCellDoubleClicked(item, field, $event)\">\n                                    {{{ getObjectValue(item, field.name, \"\") }}}\n                                </td>\n                            </template>\n                        </template>\n                    </template>\n                </tr>\n                <template v-if=\"useDetailRow\">\n                  <template v-if=\"useDetailRowComponent\">\n                    <tr v-if=\"isVisibleDetailRow(item[detailRowId])\" @click=\"onDetailRowClick(item, $event)\" :transition=\"detailRowTransition\" :class=\"[detailRowClass]\">\n                      <td :colspan=\"countVisibleFields\">\n                        <component :is=\"detailRowComponent\" :row-data=\"item\"></component>\n                      </td>\n                    </tr>\n                  </template>\n                  <template v-else=\"\">\n                    <tr v-if=\"isVisibleDetailRow(item[detailRowId])\" v-html=\"callDetailRowCallback(item)\" @click=\"onDetailRowClick(item, $event)\" :transition=\"detailRowTransition\" :class=\"[detailRowClass]\"></tr>\n                  </template>\n                </template>\n            </template>\n        </tbody>\n    </table>\n    <div v-if=\"showPagination\" class=\"vuetable-pagination {{paginationClass}}\">\n        <div class=\"vuetable-pagination-info {{paginationInfoClass}}\" v-html=\"paginationInfo\">\n        </div>\n        <div v-show=\"tablePagination &amp;&amp; tablePagination.last_page > 1\" class=\"vuetable-pagination-component {{paginationComponentClass}}\">\n            <component v-ref:pagination=\"\" :is=\"paginationComponent\"></component>\n        </div>\n    </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -1043,9 +1056,9 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-3563622c", module.exports)
+    hotAPI.createRecord("_v-a86009c0", module.exports)
   } else {
-    hotAPI.update("_v-3563622c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-a86009c0", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":"vue","vue-hot-reload-api":1,"vueify/lib/insert-css":2}],4:[function(require,module,exports){
@@ -1071,9 +1084,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-3d729fe6", module.exports)
+    hotAPI.createRecord("_v-50fb97da", module.exports)
   } else {
-    hotAPI.update("_v-3d729fe6", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-50fb97da", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./VuetablePaginationMixin.vue":6,"vue":"vue","vue-hot-reload-api":1}],5:[function(require,module,exports){
@@ -1139,9 +1152,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-9c70ccd2", module.exports)
+    hotAPI.createRecord("_v-15a35d8b", module.exports)
   } else {
-    hotAPI.update("_v-9c70ccd2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-15a35d8b", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"./VuetablePaginationMixin.vue":6,"vue":"vue","vue-hot-reload-api":1}],6:[function(require,module,exports){
@@ -1259,9 +1272,9 @@ if (module.hot) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-e34f2c2a", module.exports)
+    hotAPI.createRecord("_v-e59f6b12", module.exports)
   } else {
-    hotAPI.update("_v-e34f2c2a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-e59f6b12", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":"vue","vue-hot-reload-api":1}],7:[function(require,module,exports){

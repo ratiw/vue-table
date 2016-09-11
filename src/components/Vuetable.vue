@@ -62,12 +62,25 @@
                         </template>
                     </tr>
                     <template v-if="useDetailRow">
+                      <template v-if="useDetailRowComponent">
                         <tr v-if="isVisibleDetailRow(item[detailRowId])"
-                            v-html="callDetailRowCallback(item)"
-                            @click="onDetailRowClick(item, $event)"
-                            :transition="detailRowTransition"
-                            class="{{detailRowClass}}"
+                          @click="onDetailRowClick(item, $event)"
+                          :transition="detailRowTransition"
+                          :class="[detailRowClass]"
+                        >
+                          <td :colspan="countVisibleFields">
+                            <component :is="detailRowComponent" :row-data="item"></component>
+                          </td>
+                        </tr>
+                      </template>
+                      <template v-else>
+                        <tr v-if="isVisibleDetailRow(item[detailRowId])"
+                          v-html="callDetailRowCallback(item)"
+                          @click="onDetailRowClick(item, $event)"
+                          :transition="detailRowTransition"
+                          :class="[detailRowClass]"
                         ></tr>
+                      </template>
                     </template>
                 </template>
             </tbody>
@@ -293,6 +306,10 @@ export default {
             type: String,
             default: 'vuetable-detail-row'
         },
+        detailRowComponent: {
+            type: String,
+            default: ''
+        },
         rowClassCallback: {
             type: String,
             default: ''
@@ -332,9 +349,18 @@ export default {
                 console.warn('You need to define "detail-row-id" in order for detail-row feature to work!')
                 return false
             }
-
-            return this.detailRowCallback.trim() !== ''
+            var result = this.detailRowCallback.trim() !== '' || this.detailRowComponent !== ''
+            console.log('aaa>>>', this.detailRowComponent, result)
+            return result
         },
+        useDetailRowComponent: function() {
+            return this.detailRowComponent !== ''
+        },
+        countVisibleFields: function() {
+            return this.fields.filter(function (field) {
+                return field.visible
+            }).length
+        }
     },
     methods: {
         normalizeFields: function() {
