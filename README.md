@@ -21,6 +21,10 @@ vuetable - data table simplify!
 - Optional detail row to display additional data (v.1.2.0)
 
 ##Breaking Changes
+####v1.5.0
+  - deprecated props
+      + `row-detail-callback`: use `row-detail-component` instead
+
 ####v1.3.0
   - deprecated props 
       - `paginateConfig`: use `paginateConfigCallback` instead
