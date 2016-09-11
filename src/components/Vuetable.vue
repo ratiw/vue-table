@@ -783,6 +783,9 @@ export default {
             if (this.detailRow !== '') {
                 this.logDeprecatedMessage('detail-row', 'detail-row-callback')
             }
+            if (this.detailRowCallback !== '') {
+                this.logDeprecatedMessage('detail-row-callback', 'detail-row-component')
+            }
         }
     },
     watch: {
