@@ -9,6 +9,14 @@
                                 <th v-if="extractName(field.name) == '__checkbox'" class="{{field.titleClass || ''}}">
                                     <input type="checkbox" @change="toggleAllCheckboxes($event.target.checked, field.name)">
                                 </th>
+                                <th v-if="extractName(field.name) == '__component'"
+                                    @click="orderBy(field, $event)"
+                                    class="{{field.titleClass || ''}} {{isSortable(field) ? 'sortable' : ''}}">
+                                    {{field.title || ''}}
+                                    <i v-if="isCurrentSortField(field) && field.title"
+                                       class="{{ sortIcon(field) }}"
+                                       v-bind:style="{opacity: sortIconOpacity(field)}"></i>
+                                </th>
                                 <th v-else id="{{field.name}}" class="{{field.titleClass || ''}}">
                                     {{field.title || ''}}
                                 </th>

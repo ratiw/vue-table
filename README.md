@@ -153,7 +153,6 @@ Vue.use(VueResource);
 import Vuetable from 'vuetable/src/components/Vuetable.vue';
 import VuetablePagination from 'vuetable/src/components/VuetablePagination.vue';
 import VuetablePaginationDropdown  from 'vuetable/src/components/VuetablePaginationDropdown.vue';
-import VuetablePaginationBootstrap from 'vuetable/src/components/VuetablePaginationBootstrap.vue';
 
 //
 // thirdly, register components to Vue
@@ -161,7 +160,6 @@ import VuetablePaginationBootstrap from 'vuetable/src/components/VuetablePaginat
 Vue.component('vuetable', Vuetable);
 Vue.component('vuetable-pagination', VuetablePagination)
 Vue.component('vuetable-pagination-dropdown', VuetablePaginationDropdown)
-Vue.component('vuetable-pagination-bootstrap', VuetablePaginationBootstrap)
 
 ```
 You can combine the second and third steps into one if you like.
