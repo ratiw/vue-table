@@ -357,9 +357,8 @@ export default {
                 console.warn('You need to define "detail-row-id" in order for detail-row feature to work!')
                 return false
             }
-            var result = this.detailRowCallback.trim() !== '' || this.detailRowComponent !== ''
-            console.log('aaa>>>', this.detailRowComponent, result)
-            return result
+
+            return this.detailRowCallback.trim() !== '' || this.detailRowComponent !== ''
         },
         useDetailRowComponent: function() {
             return this.detailRowComponent !== ''
