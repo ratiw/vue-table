@@ -153,21 +153,21 @@
 					'</a>'
 				].join('')
 			},
-			/**
-			 * Other functions
-			 */
-			setFilter: function() {
-				this.moreParams = [
-					'filter=' + this.searchFor
-				]
-				this.$nextTick(function() {
-					this.$broadcast('vuetable:refresh')
-				})
-			},
-			resetFilter: function() {
-				this.searchFor = ''
-				this.setFilter()
-			},
+//			/**
+//			 * Other functions
+//			 */
+//			setFilter: function() {
+//				this.moreParams = [
+//					'filter=' + this.searchFor
+//				]
+//				this.$nextTick(function() {
+//					this.$broadcast('vuetable:refresh')
+//				})
+//			},
+//			resetFilter: function() {
+//				this.searchFor = ''
+//				this.setFilter()
+//			},
 			preg_quote: function( str ) {
 				// http://kevin.vanzonneveld.net
 				// +   original by: booeyOH

@@ -32,6 +32,7 @@
              * Other functions
              */
             setFilter: function() {
+                debugger;
                 this.moreParams = [
                     'filter=' + this.searchFor
                 ]
