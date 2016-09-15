@@ -821,6 +821,7 @@ export default {
             this.loadData()
         },
         'vuetable:refresh': function() {
+            debugger
             this.currentPage = 1
             this.loadData()
         },

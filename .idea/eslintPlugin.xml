@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ESLintProjectComponent">
+    <option name="eslintRcFile" value=".eslintrc.js" />
+    <option name="eslintExecutable" value="/usr/local/bin/eslint" />
+    <option name="nodeInterpreter" value="/usr/local/bin/node" />
+    <option name="pluginEnabled" value="true" />
+  </component>
+</project>
