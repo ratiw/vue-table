@@ -23,7 +23,7 @@ vuetable - data table simplify!
 ##Breaking Changes
 ####v1.5.0
   - deprecated props
-      + `row-detail-callback`: use `row-detail-component` instead
+      + `detail-row-callback`: use `row-detail-component` instead
 
 ####v1.3.0
   - deprecated props 

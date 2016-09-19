@@ -17,7 +17,8 @@
                                        class="{{ sortIcon(field) }}"
                                        v-bind:style="{opacity: sortIconOpacity(field)}"></i>
                                 </th>
-                                <th v-else id="{{field.name}}" class="{{field.titleClass || ''}}">
+                                <th v-if="notIn(extractName(field.name), ['__checkbox', '__component'])"
+                                    id="{{field.name}}" class="{{field.titleClass || ''}}">
                                     {{field.title || ''}}
                                 </th>
                             </template>
@@ -409,6 +410,9 @@ export default {
             return str.replace(/\w+/g, function(txt){
                 return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
             })
+        },
+        notIn: function(str, arr) {
+            return arr.indexOf(str) === -1
         },
         loadData: function() {
             var self = this
