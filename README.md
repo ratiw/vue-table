@@ -13,7 +13,7 @@ vuetable - data table simplify!
 - Define row actions and capture the click event to do whatever you want
 - Field display customizable via callback function inside Vue.js instance
 - Programmatically show/hide any field via reactivity of fields definition
-- Use your favorite CSS framework classes to nicely format your table and dispalyed data
+- Use your favorite CSS framework classes to nicely format your table and displayed data
 - Events to allow control from Vue.js instance programmatically
 - Capture events from `vuetable` to manipulate your table and your data
 - Should work with any pre-defined JSON data structure
