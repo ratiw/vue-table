@@ -5,7 +5,7 @@
   "main": "src/vue-table.js",
   "dependencies": {
     "vue": "~1.0.21",
-    "vue-resource": "~0.7"
+    "vue-resource": "~1.0.2"
   },
   "keywords": [
     "vue",
