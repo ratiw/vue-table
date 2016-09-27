@@ -4,7 +4,7 @@
   "description": "vue.js table component that will automatically request JSON data from server and display them nicely in HTML table with swap-able/extensible pagination component",
   "main": "src/vue-table.js",
   "dependencies": {
-    "vue": "~1.0.21",
+    "vue": "~1.0.26",
     "vue-resource": "~1.0.2"
   },
   "keywords": [
