@@ -13,12 +13,19 @@ vuetable - data table simplify!
 - Define row actions and capture the click event to do whatever you want
 - Field display customizable via callback function inside Vue.js instance
 - Programmatically show/hide any field via reactivity of fields definition
-- Use your favorite CSS framework classes to nicely format your table and dispalyed data
+- Use your favorite CSS framework classes to nicely format your table and displayed data
 - Events to allow control from Vue.js instance programmatically
 - Capture events from `vuetable` to manipulate your table and your data
 - Should work with any pre-defined JSON data structure
 - Should work with any CSS Framework, e.g. Semantic UI, Twitter's Bootstrap
 - Optional detail row to display additional data (v.1.2.0)
+
+## Note on vue-resource version
+vuetable internally uses vue-resource to request data from the `api-url`. Prior to v1.5.3, vuetable uses vue-resource v0.7.4 and it retrieves the returned data from `response.data` object. However, since [v0.9.0](https://github.com/vuejs/vue-resource/releases/tag/0.9.0) the `response.data` has been renamed to `response.body`. vuetable v1.5.3 onward has been updated to use vue-resource v1.0.2.
+
+This will cause problem with vuetable to display no data because the expected object key is no longer existed and some other related problems as discussed in [#100](https://github.com/ratiw/vue-table/issues/100).
+
+**If you're using vue-resource in your project and the version is 0.9+, please upgrade to use vuetable v1.5.3.**
 
 ##Breaking Changes
 ####v1.5.0
@@ -198,7 +205,7 @@ Then, reference the vuetable via `<vuetable>` tag as following
 					'lastname',
 					'nickname',
 					'birthdate',
-					'group.name_en'
+					'group.name_en',
 					'gender',
 					'last_login',
 					'__actions'
