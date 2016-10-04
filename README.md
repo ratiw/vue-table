@@ -134,6 +134,13 @@ css framework, please see [documentation in the Wiki pages](https://github.com/r
 
 ## Usage
 
+### Javascript
+```
+<script type="text/javascript" src="http://cdn.jsdelivr.net/vue.table/1.5.3/vue-table.min.js"></script>
+//or
+<script type="text/javascript" src="http://cdn.jsdelivr.net/vue.table/1.5.3/vue-table.js"></script>
+```
+
 ### Bower
 
 ```
