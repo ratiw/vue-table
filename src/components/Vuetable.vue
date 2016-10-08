@@ -283,12 +283,6 @@ export default {
                 return []
             }
         },
-        httpData: {
-            type: Object,
-            default: function() {
-                return {}
-            }
-        },
         httpOptions: {
             type: Object,
             default: function() {
@@ -421,7 +415,7 @@ export default {
             this.showLoadingAnimation(wrapper)
 
             var url = this.apiUrl + '?' + this.getAllQueryParams()
-            this.$http.get(url, this.httpData, this.httpOptions)
+            this.$http.get(url, this.httpOptions)
                 .then(function(response) {
                     self.tableData = self.getObjectValue(response.body, self.dataPath, null)
                     self.tablePagination = self.getObjectValue(response.body, self.paginationPath, null)
