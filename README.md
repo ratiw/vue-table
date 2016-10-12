@@ -134,6 +134,17 @@ css framework, please see [documentation in the Wiki pages](https://github.com/r
 
 ## Usage
 
+### Javascript
+```javascript
+//vue-table dependencies (vue and vue-resource)
+<script src="https://cdn.jsdelivr.net/vue/1.0.28/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/vue.resource/1.0.3/vue-resource.min.js"></script>
+
+<script type="text/javascript" src="http://cdn.jsdelivr.net/vue.table/1.5.3/vue-table.min.js"></script>
+//or
+<script type="text/javascript" src="http://cdn.jsdelivr.net/vue.table/1.5.3/vue-table.js"></script>
+```
+
 ### Bower
 
 ```
@@ -224,6 +235,22 @@ Please see [Field Definition](https://github.com/ratiw/vue-table/wiki/Fields-Def
 section for more detail.
 
 For more detail, please see [documentation in the Wiki pages](https://github.com/ratiw/vue-table/wiki).
+
+<a id="browser_compat"></a>
+## Browser Compatability
+As I use **Chrome** almost exclusively, it is gaurantee to work on this browser and it SHOULD also work for other **WebKit** based browsers as well. But I can't really gaurantee that since I don't use them regularly. 
+ 
+However, `vuetable` will NOT WORK on **Internet Explorer** (even IE11) due to the use of `<template>` tag inside `<table>` according to [this](https://github.com/ratiw/vue-table/issues/25#issuecomment-220920656). In order to make it work with CSS framework table styling, I have to preserve the use of `<table>` and `<template>` tag inside it.
+ 
+It seems to work just fine in **Microsoft Edge** though. Anyway, if you find that it does not work on any other browser, you can let me know by posting in the [Issues](https://github.com/ratiw/vue-table/issues). Or if you are able to make it work on those browser, please let me know or create a pull request.
+ 
+<a id="contribute"></a>
+## Contributions
+Any contribution to the code (via pull request would be nice) or any part of the documentation (the Wiki always need some love and care) and any idea and/or suggestion are very welcome.
+ 
+However, please do not feel bad if your pull requests or contributions do not get merged or implemented into `vuetable`. 
+ 
+Your contributions can, not only help make `vuetable` better, but also push it away from what I intend to use it for. I just hope that you find it useful for your use or learn something useful from its source code. But remember, you can always fork it to make it work the way you want.
 
 ### Building
 
