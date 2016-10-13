@@ -20,6 +20,12 @@ vuetable - data table simplify!
 - Should work with any CSS Framework, e.g. Semantic UI, Twitter's Bootstrap
 - Optional detail row to display additional data (v.1.2.0)
 
+---
+## vuetable is only working for Vue 1.x, vuetable-2 is for Vue 2.x
+If you're looking for the version that's working with Vue 2.x, please go to [`vuetable-2`](https://github.com/ratiw/vuetable-2) repo. However, I still have no time to work on the documentation. But if you're familiar enough with `vuetable`, it shouldn't be any much different. Look at the [what's changed](https://github.com/ratiw/vuetable-2/blob/master/changes.md) for info on changes from version 1 and the [upgrade guide]() on how you could upgrade from version 1.
+
+---
+
 ## Note on vue-resource version
 vuetable internally uses vue-resource to request data from the `api-url`. Prior to v1.5.3, vuetable uses vue-resource v0.7.4 and it retrieves the returned data from `response.data` object. However, since [v0.9.0](https://github.com/vuejs/vue-resource/releases/tag/0.9.0) the `response.data` has been renamed to `response.body`. vuetable v1.5.3 onward has been updated to use vue-resource v1.0.2.
 
