@@ -22,7 +22,7 @@ vuetable - data table simplify!
 
 ---
 ## vuetable is only working for Vue 1.x, vuetable-2 is for Vue 2.x
-If you're looking for the version that's working with Vue 2.x, please go to [`vuetable-2`](https://github.com/ratiw/vuetable-2) repo. However, I still have no time to work on the documentation. But if you're familiar enough with `vuetable`, it shouldn't be any much different. Look at the [what's changed](https://github.com/ratiw/vuetable-2/blob/master/changes.md) for info on changes from version 1 and the [upgrade guide]() on how you could upgrade from version 1.
+If you're looking for the version that's working with Vue 2.x, please go to [`vuetable-2`](https://github.com/ratiw/vuetable-2) repo. However, I still have no time to work on the documentation. But if you're familiar enough with `vuetable`, it shouldn't be any much different. Look at the [what's changed](https://github.com/ratiw/vuetable-2/blob/master/changes.md) for info on changes from version 1 and the [upgrade guide](https://github.com/ratiw/vuetable-2/blob/master/upgrade-guide.md) on how you could upgrade from version 1.
 
 ---
 
