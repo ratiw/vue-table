@@ -316,6 +316,12 @@ export default {
         rowClassCallback: {
             type: String,
             default: ''
+        },
+        transform: {
+            type: Function,
+            default: function(data) {
+                return data
+            }
         }
     },
     data: function() {
@@ -417,8 +423,9 @@ export default {
             var url = this.apiUrl + '?' + this.getAllQueryParams()
             this.$http.get(url, this.httpOptions)
                 .then(function(response) {
-                    self.tableData = self.getObjectValue(response.body, self.dataPath, null)
-                    self.tablePagination = self.getObjectValue(response.body, self.paginationPath, null)
+                    var body = this.transform(response.body);
+                    self.tableData = self.getObjectValue(body, self.dataPath, null)
+                    self.tablePagination = self.getObjectValue(body, self.paginationPath, null)
                     if (self.tablePagination === null) {
                         console.warn('vuetable: pagination-path "' + self.paginationPath + '" not found. '
                             + 'It looks like the data returned from the sever does not have pagination information '
