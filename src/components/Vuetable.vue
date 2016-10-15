@@ -317,12 +317,6 @@ export default {
             type: String,
             default: ''
         },
-        transform: {
-            type: Function,
-            default: function(data) {
-                return data
-            }
-        }
     },
     data: function() {
         return {
@@ -470,6 +464,18 @@ export default {
                 this.removeClass(wrapper, this.loadingClass)
             }
             this.dispatchEvent('loaded')
+        },
+        transform: function(data) {
+          let func = 'transform'
+
+          if (this.parentFunctionExists(func)) {
+              return this.$parent[func].call(this.$parent, data)
+          }
+
+          return data
+        },
+        parentFunctionExists: function(func) {
+          return (func !== '' && typeof this.$parent[func] === 'function')
         },
         getTitle: function(field) {
             if (typeof field.title === 'undefined') {
