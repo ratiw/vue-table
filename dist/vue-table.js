@@ -632,8 +632,9 @@ exports.default = {
 
             var url = this.apiUrl + '?' + this.getAllQueryParams();
             this.$http.get(url, this.httpOptions).then(function (response) {
-                self.tableData = self.getObjectValue(response.body, self.dataPath, null);
-                self.tablePagination = self.getObjectValue(response.body, self.paginationPath, null);
+                var body = this.transform(response.body);
+                self.tableData = self.getObjectValue(body, self.dataPath, null);
+                self.tablePagination = self.getObjectValue(body, self.paginationPath, null);
                 if (self.tablePagination === null) {
                     console.warn('vuetable: pagination-path "' + self.paginationPath + '" not found. ' + 'It looks like the data returned from the sever does not have pagination information ' + 'or you may have set it incorrectly.');
                 }
@@ -671,6 +672,18 @@ exports.default = {
                 this.removeClass(wrapper, this.loadingClass);
             }
             this.dispatchEvent('loaded');
+        },
+        transform: function transform(data) {
+            var func = 'transform';
+
+            if (this.parentFunctionExists(func)) {
+                return this.$parent[func].call(this.$parent, data);
+            }
+
+            return data;
+        },
+        parentFunctionExists: function parentFunctionExists(func) {
+            return func !== '' && typeof this.$parent[func] === 'function';
         },
         getTitle: function getTitle(field) {
             if (typeof field.title === 'undefined') {
