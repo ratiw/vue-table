@@ -777,7 +777,7 @@ export default {
             return true
         },
         onRowDoubleClicked: function(dataItem, event) {
-            this.$dispatch(this.eventPrefix + 'row-dblclicked', dataItem, vent);
+            this.$dispatch(this.eventPrefix + 'row-dblclicked', dataItem, event);
         },
         onCellClicked: function(dataItem, field, event) {
             this.$dispatch(this.eventPrefix+'cell-clicked', dataItem, field, event)
