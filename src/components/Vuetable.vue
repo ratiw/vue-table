@@ -6,8 +6,10 @@
                     <template v-for="field in fields">
                         <template v-if="field.visible">
                             <template v-if="isSpecialField(field.name)">
-                                <th v-if="extractName(field.name) == '__checkbox'" class="{{field.titleClass || ''}}">
-                                    <input type="checkbox" @change="toggleAllCheckboxes($event.target.checked, field.name)">
+                                <th v-if="extractName(field.name) == '__checkbox'"
+                                    :class="[field.titleClass, 'checkbox_'+extractArgs(field.name)]">
+                                    <input type="checkbox" @change="toggleAllCheckboxes($event.target.checked, field.name)"
+                                        :checked="checkCheckboxesState(field.name)">
                                 </th>
                                 <th v-if="extractName(field.name) == '__component'"
                                     @click="orderBy(field, $event)"
@@ -721,6 +723,41 @@ export default {
         },
         isSelectedRow: function(dataItem, fieldName) {
             return this.selectedTo.indexOf(dataItem[this.extractArgs(fieldName)]) >= 0
+        },
+        checkCheckboxesState: function(fieldName) {
+            if (this.selectedTo.length === 0) return false
+
+            var self = this
+            var selector = 'th.checkbox_' + this.extractArgs(fieldName) + ' input[type=checkbox]'
+            var els = document.querySelectorAll(selector)
+            var idColumn = this.extractArgs(fieldName)
+
+            // count how many checkbox row in the current page has been checked
+            var selected = this.tableData.filter(function(item) {
+                return self.selectedTo.indexOf(item[idColumn]) >= 0
+            })
+
+            // count == 0, clear the checkbox
+            if (selected.length <= 0) {
+                els.forEach(function(el) {
+                    el.indeterminate = false
+                })
+                return false
+            }
+            // count > 0 and count < perPage, set checkbox state to 'indeterminate'
+            else if (selected.length < this.perPage) {
+                els.forEach(function(el) {
+                    el.indeterminate = true
+                })
+                return true
+            }
+            // count == perPage, set checkbox state to 'checked'
+            else {
+                els.forEach(function(el) {
+                    el.indeterminate = false
+                })
+                return true
+            }
         },
         extractName: function(string) {
             return string.split(':')[0].trim()
