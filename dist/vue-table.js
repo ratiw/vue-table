@@ -739,7 +739,7 @@ exports.default = {
                 if (i === false) {
                     //this field is not in the sort array yet
                     this.sortOrder.push({
-                        field: field.name,
+                        field: field.sortField,
                         direction: 'asc'
                     });
                 } else {
@@ -763,15 +763,14 @@ exports.default = {
 
                 this.sortOrder.splice(1); //removes additional columns
 
-                if (this.sortOrder[0].field == field.name) {
+                if (this.sortOrder[0].field == field.sortField) {
                     // change sort direction
                     this.sortOrder[0].direction = this.sortOrder[0].direction == 'asc' ? 'desc' : 'asc';
                 } else {
                     // reset sort direction
                     this.sortOrder[0].direction = 'asc';
                 }
-                this.sortOrder[0].field = field.name;
-                this.sortOrder[0].sortField = field.sortField;
+                this.sortOrder[0].field = field.sortField;
             }
 
             this.currentPage = 1; // reset page index
@@ -789,7 +788,7 @@ exports.default = {
             }
 
             for (var i = 0; i < this.sortOrder.length; i++) {
-                if (this.sortOrder[i].field == field.name) {
+                if (this.sortOrder[i].field == field.sortField) {
                     return i;
                 }
             }
