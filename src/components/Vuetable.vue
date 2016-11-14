@@ -36,7 +36,7 @@
             </thead>
             <tbody v-cloak>
                 <template v-for="(itemNumber, item) in tableData">
-                    <tr @click="onRowClicked(item, $event)" :render="onRowChanged(item)" :class="onRowClass(item, itemNumber)">
+                    <tr @dblClick="onRowDoubleClicked(item, $event)" @click="onRowClicked(item, $event)" :render="onRowChanged(item)" :class="onRowClass(item, itemNumber)">
                         <template v-for="field in fields">
                             <template v-if="field.visible">
                                 <template v-if="isSpecialField(field.name)">
@@ -775,6 +775,9 @@ export default {
         onRowClicked: function(dataItem, event) {
             this.$dispatch(this.eventPrefix+'row-clicked', dataItem, event)
             return true
+        },
+        onRowDoubleClicked: function(dataItem, event) {
+            this.$dispatch(this.eventPrefix + 'row-dblclicked', dataItem, event);
         },
         onCellClicked: function(dataItem, field, event) {
             this.$dispatch(this.eventPrefix+'cell-clicked', dataItem, field, event)
