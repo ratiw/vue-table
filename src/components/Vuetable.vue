@@ -58,7 +58,7 @@
                                         </template>
                                     </td>
                                     <td v-if="extractName(field.name) == '__component'" class="{{field.dataClass}}">
-                                        <component :is="extractArgs(field.name)" :row-data="item"></component>
+                                        <component :is="extractArgs(field.name)" :row-data="item" :row-index="itemNumber"></component>
                                     </td>
                                 </template>
                                 <template v-else>
