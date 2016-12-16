@@ -731,14 +731,14 @@ export default {
             //     return item !== key
             // })
         },
-        isSelectedRow: function(dataItem, fieldName) {
+        isSelectedRow: function(key) {
             return this.selectedTo.indexOf(key) >= 0
         },
         rowSelected: function(dataItem, fieldName) {
             var idColumn = this.extractArgs(fieldName)
-            var key = dataItem[idColumn]
+            // var key = dataItem[idColumn]
 
-            return this.isSelectedRow(key)
+            return this.isSelectedRow(dataItem[idColumn])
         },
         checkCheckboxesState: function(fieldName) {
             if (this.selectedTo.length === 0) return false

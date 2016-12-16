@@ -926,14 +926,14 @@ exports.default = {
             //     return item !== key
             // })
         },
-        isSelectedRow: function isSelectedRow(dataItem, fieldName) {
+        isSelectedRow: function isSelectedRow(key) {
             return this.selectedTo.indexOf(key) >= 0;
         },
         rowSelected: function rowSelected(dataItem, fieldName) {
             var idColumn = this.extractArgs(fieldName);
-            var key = dataItem[idColumn];
+            // var key = dataItem[idColumn]
 
-            return this.isSelectedRow(key);
+            return this.isSelectedRow(dataItem[idColumn]);
         },
         checkCheckboxesState: function checkCheckboxesState(fieldName) {
             if (this.selectedTo.length === 0) return false;
