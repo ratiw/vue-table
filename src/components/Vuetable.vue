@@ -17,7 +17,7 @@
                                     {{field.title || ''}}
                                     <i v-if="isCurrentSortField(field) && field.title"
                                        class="{{ sortIcon(field) }}"
-                                       v-bind:style="{opacity: sortIconOpacity(field)}"></i>
+                                       :style="{opacity: sortIconOpacity(field)}"></i>
                                 </th>
                                 <th v-if="notIn(extractName(field.name), ['__checkbox', '__component'])"
                                     id="{{field.name}}" class="{{field.titleClass || ''}}">
@@ -29,7 +29,7 @@
                                     id="_{{field.name}}"
                                     class="{{field.titleClass || ''}} {{isSortable(field) ? 'sortable' : ''}}">
                                     {{getTitle(field) | capitalize}}&nbsp;
-                                    <i v-if="isCurrentSortField(field)" class="{{ sortIcon(field) }}" v-bind:style="{opacity: sortIconOpacity(field)}"></i>
+                                    <i v-if="isCurrentSortField(field)" class="{{ sortIcon(field) }}" :style="{opacity: sortIconOpacity(field)}"></i>
                                 </th>
                             </template>
                         </template>
