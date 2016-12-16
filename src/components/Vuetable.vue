@@ -48,7 +48,7 @@
                                     <td v-if="extractName(field.name) == '__checkbox'" class="vuetable-checkboxes {{field.dataClass}}">
                                         <input type="checkbox"
                                             @change="toggleCheckbox($event.target.checked, item, field.name)"
-                                            :checked="isSelectedRow(item, field.name)">
+                                            :checked="rowSelected(item, field.name)">
                                     </td>
                                     <td v-if="field.name == '__actions'" class="vuetable-actions {{field.dataClass}}">
                                         <template v-for="action in itemActions">
@@ -710,26 +710,41 @@ export default {
 
             if (isChecked) {
                 this.tableData.forEach(function(dataItem) {
-                    if ( ! self.isSelectedRow(dataItem, fieldName)) {
-                        self.selectedTo.push(dataItem[idColumn])
-                    }
+                    self.selectId(dataItem[idColumn])
                 })
             } else {
                 this.tableData.forEach(function(dataItem) {
-                    self.selectedTo.$remove(dataItem[idColumn])
+                    self.unselectId(dataItem[idColumn])
                 })
             }
         },
+        selectId: function(key) {
+            if (! this.isSelectedRow(key)) {
+                this.selectedTo.push(key)
+            }
+        },
+        unselectId: function(key) {
+            this.selectedTo.$remove(key)
+            // this.selectedTo = this.selectedTo.filter(function(item) {
+            //     return item !== key
+            // })
+        },
         isSelectedRow: function(dataItem, fieldName) {
-            return this.selectedTo.indexOf(dataItem[this.extractArgs(fieldName)]) >= 0
+            return this.selectedTo.indexOf(key) >= 0
+        },
+        rowSelected: function(dataItem, fieldName) {
+            var idColumn = this.extractArgs(fieldName)
+            var key = dataItem[idColumn]
+
+            return this.isSelectedRow(key)
         },
         checkCheckboxesState: function(fieldName) {
             if (this.selectedTo.length === 0) return false
 
             var self = this
-            var selector = 'th.checkbox_' + this.extractArgs(fieldName) + ' input[type=checkbox]'
-            var els = document.querySelectorAll(selector)
             var idColumn = this.extractArgs(fieldName)
+            var selector = 'th.checkbox_' + idColumn + ' input[type=checkbox]'
+            var els = document.querySelectorAll(selector)
 
             // count how many checkbox row in the current page has been checked
             var selected = this.tableData.filter(function(item) {
