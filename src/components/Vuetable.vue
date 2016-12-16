@@ -698,10 +698,12 @@ export default {
                 console.warn('You did not provide reference id column with "__checkbox:<column_name>" field!')
                 return
             }
+
+            var key = dataItem[idColumn]
             if (isChecked) {
-                this.selectedTo.push(dataItem[idColumn])
+                this.selectId(key)
             } else {
-                this.selectedTo.$remove(dataItem[idColumn])
+                this.unselectId(key)
             }
         },
         toggleAllCheckboxes: function(isChecked, fieldName) {
