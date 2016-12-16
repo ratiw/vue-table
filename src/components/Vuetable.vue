@@ -80,7 +80,7 @@
                           :class="[detailRowClass]"
                         >
                           <td :colspan="countVisibleFields">
-                            <component :is="detailRowComponent" :row-data="item"></component>
+                            <component :is="detailRowComponent" :row-data="item" :row-index="itemNumber"></component>
                           </td>
                         </tr>
                       </template>
