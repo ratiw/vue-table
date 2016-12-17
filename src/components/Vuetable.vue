@@ -741,8 +741,6 @@ export default {
             return this.isSelectedRow(dataItem[idColumn])
         },
         checkCheckboxesState: function(fieldName) {
-            if (this.selectedTo.length === 0) return false
-
             var self = this
             var idColumn = this.extractArgs(fieldName)
             var selector = 'th.checkbox_' + idColumn + ' input[type=checkbox]'
