@@ -901,6 +901,9 @@ export default {
         },
         'vuetable:hide-detail': function(dataItem) {
             this.hideDetailRow(dataItem)
+        },
+        'vuetable:normalize-fields': function() {
+            this.normalizeFields()
         }
     },
     created: function() {
