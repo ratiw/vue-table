@@ -33,18 +33,18 @@ This will cause problem with vuetable to display no data because the expected ob
 
 **If you're using vue-resource in your project and the version is 0.9+, please upgrade to use vuetable v1.5.3.**
 
-##Breaking Changes
-####v1.5.0
+## Breaking Changes
+#### v1.5.0
   - deprecated props
       + `detail-row-callback`: use `row-detail-component` instead
 
-####v1.3.0
+#### v1.3.0
   - deprecated props 
       - `paginateConfig`: use `paginateConfigCallback` instead
       - `detail-row`: use `detail-row-callback` instead
 
 
-####v1.2.0
+#### v1.2.0
 -  `sort-order` option type was changed from `Object` to `Array` to support `multi-sort`, therefore it should be declared as array. [#36](https://github.com/ratiw/vue-table/pull/36)
 
     ```
