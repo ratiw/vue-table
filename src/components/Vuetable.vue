@@ -663,8 +663,8 @@ export default {
 
             if (typeof this.$parent[func] == 'function') {
                 return (args.length > 0)
-                    ? this.$parent[func].apply(this.$parent, [this.getObjectValue(item, field.name)].concat(args))
-                    : this.$parent[func].call(this.$parent, this.getObjectValue(item, field.name))
+                    ? this.$parent[func].apply(this.$parent, [this.getObjectValue(item, field.name)].concat(args, item))
+                    : this.$parent[func].call(this.$parent, this.getObjectValue(item, field.name), item)
             }
 
             return null
