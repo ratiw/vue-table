@@ -144,7 +144,8 @@ css framework, please see [documentation in the Wiki pages](https://github.com/r
 ```javascript
 //vue-table dependencies (vue and vue-resource)
 <script src="https://cdn.jsdelivr.net/vue/1.0.28/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/vue.resource/1.0.3/vue-resource.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.3.4/vue-resource.common.js"></script>
 
 <script type="text/javascript" src="http://cdn.jsdelivr.net/vue.table/1.5.3/vue-table.min.js"></script>
 //or
