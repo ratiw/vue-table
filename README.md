@@ -180,7 +180,7 @@ Vue.use(VueResource);
 //
 import Vuetable from 'vuetable/src/components/Vuetable.vue';
 import VuetablePagination from 'vuetable/src/components/VuetablePagination.vue';
-import VuetablePaginationDropdown  from 'vuetable/src/components/VuetablePaginationDropdown.vue';
+import VuetablePaginationDropdown from 'vuetable/src/components/VuetablePaginationDropdown.vue';
 
 //
 // thirdly, register components to Vue
