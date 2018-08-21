@@ -1,6 +1,16 @@
 [![npm](https://img.shields.io/npm/v/vuetable.svg)](https://www.npmjs.com/package/vuetable)
 [![npm](https://img.shields.io/npm/l/vuetable.svg?maxAge=2592000)]()
 
+----
+
+## Please Note!
+
+This is the previous version that works with Vue 1.x. The most up-to-date version is the [Vuetable-2](https://github.com/ratiw/vuetable-2). If you like it, please *star* the [Vuetable-2 repo](https://github.com/ratiw/vuetable-2) instead, or make a small [donation](https://www.paypal.me/ratiw) to support it.
+
+### This version is *"no longer supported"* as I do not have time to maintain different version.
+
+----
+
 vuetable - data table simplify!
 ========
 
